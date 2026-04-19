@@ -1,0 +1,2151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Marcus Tan · Monday Morning · Sales Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --d365-blue: #0078D4;
+    --d365-blue-dark: #106EBE;
+    --d365-blue-light: #DEECF9;
+    --d365-bg: #FAF9F8;
+    --d365-card: #FFFFFF;
+    --d365-border: #EDEBE9;
+    --d365-border-strong: #D2D0CE;
+    --d365-text: #323130;
+    --d365-text-secondary: #605E5C;
+    --d365-text-tertiary: #8A8886;
+
+    --lenovo-red: #E2231A;
+    --lenovo-red-dark: #B61C14;
+    --lenovo-red-soft: #FEF2F2;
+    --lenovo-ink: #0F1419;
+
+    --marketo-purple: #5C4B97;
+    --marketo-purple-light: #EDE7F6;
+
+    --paper: #FAFAF7;
+    --paper-warm: #F4F2EC;
+
+    --accent-green: #107C10;
+    --accent-amber: #D83B01;
+    --accent-purple: #8764B8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
+    background: var(--d365-bg);
+    color: var(--d365-text);
+    font-size: 13px;
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .serif { font-family: 'Fraunces', Georgia, serif; font-optical-sizing: auto; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* ===================== D365 TOP BAR ===================== */
+  .app-bar {
+    height: 48px;
+    background: #0078D4;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+  .app-bar .ms-waffle {
+    width: 32px; height: 32px;
+    display: grid; place-items: center;
+  }
+  .app-bar .app-name {
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .app-bar .app-name .sep { opacity: 0.6; margin: 0 8px; font-weight: 400; }
+  .app-bar .app-name .module { opacity: 0.85; font-weight: 400; }
+  .app-bar-search {
+    margin-left: auto;
+    width: 460px;
+    background: rgba(255,255,255,0.95);
+    border-radius: 2px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    color: var(--d365-text-tertiary);
+    font-size: 13px;
+  }
+  .app-bar-icons {
+    display: flex;
+    gap: 4px;
+    margin-left: 12px;
+  }
+  .app-bar-icons .icon {
+    width: 32px; height: 32px;
+    display: grid; place-items: center;
+    font-size: 14px;
+  }
+  .app-bar .avatar {
+    width: 32px; height: 32px;
+    background: #8764B8;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 8px;
+  }
+
+  /* ===================== LAYOUT ===================== */
+  .layout {
+    display: grid;
+    grid-template-columns: 48px 220px 1fr;
+    height: calc(100vh - 48px);
+  }
+
+  .left-rail {
+    background: #F3F2F1;
+    border-right: 1px solid var(--d365-border);
+    display: flex;
+    flex-direction: column;
+    padding: 8px 0;
+    gap: 2px;
+  }
+  .rail-icon {
+    width: 48px; height: 44px;
+    display: grid; place-items: center;
+    cursor: pointer;
+    font-size: 18px;
+    color: var(--d365-text-secondary);
+    position: relative;
+  }
+  .rail-icon.active { color: var(--d365-blue); }
+  .rail-icon.active::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 8px; bottom: 8px;
+    width: 3px;
+    background: var(--d365-blue);
+  }
+
+  .nav-panel {
+    background: white;
+    border-right: 1px solid var(--d365-border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .nav-heading {
+    padding: 14px 16px 8px;
+    font-size: 11px;
+    color: var(--d365-text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+  }
+  .nav-panel .section-title {
+    padding: 10px 16px 6px;
+    font-size: 12px;
+    color: var(--d365-text-secondary);
+    font-weight: 600;
+  }
+  .nav-link {
+    padding: 6px 16px 6px 32px;
+    font-size: 13px;
+    color: var(--d365-text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-link:hover { background: #F3F2F1; }
+  .nav-link.active {
+    background: var(--d365-blue-light);
+    border-left: 2px solid var(--d365-blue);
+    padding-left: 30px;
+    font-weight: 600;
+  }
+  .nav-link .icon {
+    font-size: 14px;
+    color: var(--d365-text-tertiary);
+  }
+
+  /* ===================== MAIN ===================== */
+  .main {
+    overflow-y: auto;
+    background: var(--d365-bg);
+  }
+
+  /* ========== Relay status bar (origin A) ========== */
+  .relay-status-bar {
+    background: linear-gradient(to right, var(--lenovo-ink) 0%, #1C232B 100%);
+    color: white;
+    padding: 10px 40px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+  .relay-status-bar::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(to right, var(--lenovo-red), transparent 50%);
+  }
+  .relay-badge-mini {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+  }
+  .relay-badge-mini .mark {
+    width: 18px; height: 18px;
+    background: var(--lenovo-red);
+    border-radius: 3px;
+    display: grid; place-items: center;
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 11px;
+  }
+  .relay-status-bar .divider { width: 1px; height: 14px; background: rgba(255,255,255,0.2); }
+  .relay-status-bar .info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255,255,255,0.85);
+  }
+  .relay-status-bar .info strong { color: white; font-weight: 600; }
+  .relay-status-bar .info .dot-green { width: 6px; height: 6px; background: #4ADE80; border-radius: 50%; }
+  .relay-status-bar .data-sources {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10.5px;
+    color: rgba(255,255,255,0.6);
+  }
+  .relay-status-bar .data-sources .chip {
+    padding: 2px 8px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+  }
+
+  /* Greeting banner */
+  .greeting {
+    padding: 24px 40px 20px;
+    background: white;
+    border-bottom: 1px solid var(--d365-border);
+  }
+  .greeting .time {
+    font-size: 12px;
+    color: var(--d365-text-tertiary);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 6px;
+  }
+  .greeting h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 30px;
+    font-weight: 400;
+    color: var(--d365-text);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .greeting h1 em {
+    font-style: italic;
+    color: var(--d365-blue);
+  }
+  .greeting .sub {
+    font-size: 13px;
+    color: var(--d365-text-secondary);
+    margin-top: 6px;
+  }
+
+  /* Stats strip */
+  .stats-strip {
+    padding: 18px 40px;
+    background: white;
+    border-bottom: 1px solid var(--d365-border);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+  }
+  .stat-box { display: flex; flex-direction: column; gap: 2px; }
+  .stat-box .l {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--d365-text-tertiary);
+    font-weight: 600;
+  }
+  .stat-box .n {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--d365-text);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .stat-box .n .unit {
+    font-size: 14px;
+    color: var(--d365-text-tertiary);
+    margin-left: 2px;
+  }
+  .stat-box .delta {
+    font-size: 11px;
+    color: var(--accent-green);
+    font-weight: 500;
+  }
+  .stat-box .delta.neg { color: var(--accent-amber); }
+
+  /* Section */
+  .section {
+    padding: 24px 40px 32px;
+  }
+  .section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .section-head h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 19px;
+    font-weight: 500;
+    color: var(--d365-text);
+    letter-spacing: -0.01em;
+  }
+  .section-head .count {
+    font-size: 12px;
+    color: var(--d365-text-tertiary);
+    margin-left: 8px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .section-head .actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .filter-btn {
+    font-size: 12px;
+    padding: 6px 12px;
+    border: 1px solid var(--d365-border);
+    background: white;
+    border-radius: 3px;
+    cursor: pointer;
+    color: var(--d365-text);
+    font-family: inherit;
+  }
+  .filter-btn.active { background: var(--d365-blue-light); border-color: var(--d365-blue); color: var(--d365-blue); font-weight: 600; }
+
+  .simulate-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    background: var(--lenovo-ink);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .simulate-btn:hover { background: var(--lenovo-red); }
+  .simulate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .simulate-btn .pulse-dot {
+    width: 6px; height: 6px;
+    background: var(--lenovo-red);
+    border-radius: 50%;
+    animation: pulse 1.6s infinite;
+  }
+  .simulate-btn:hover .pulse-dot { background: white; }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.3); }
+  }
+
+  /* Opportunity row */
+  .opp-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .opp-card {
+    background: white;
+    border: 1px solid var(--d365-border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    display: grid;
+    grid-template-columns: auto 1fr auto auto auto;
+    gap: 20px;
+    align-items: center;
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+  .opp-card:hover {
+    border-color: var(--d365-border-strong);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  }
+
+  .opp-card.featured {
+    border: 1px solid var(--lenovo-red);
+    background: linear-gradient(to right, var(--lenovo-red-soft), white 30%);
+    box-shadow: 0 2px 8px rgba(226, 35, 26, 0.08);
+    position: relative;
+    overflow: visible;
+  }
+  .opp-card.featured::before {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0; left: 0;
+    width: 3px;
+    background: var(--lenovo-red);
+    border-radius: 8px 0 0 8px;
+  }
+
+  .opp-card.incoming {
+    animation: slide-in 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    border: 1px solid var(--lenovo-red);
+    background: linear-gradient(to right, #FEF3C7, white 30%);
+    box-shadow: 0 4px 16px rgba(226, 35, 26, 0.15);
+  }
+  @keyframes slide-in {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .opp-priority {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--d365-text-tertiary);
+    width: 32px;
+    text-align: center;
+    font-weight: 400;
+  }
+  .opp-card.featured .opp-priority { color: var(--lenovo-red); font-weight: 500; }
+
+  .opp-content .opp-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--d365-text);
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .opp-content .rating-pill {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    letter-spacing: 0.04em;
+  }
+  .opp-content .rating-pill.hot { background: #FEF3C7; color: var(--accent-amber); }
+  .opp-content .rating-pill.warm { background: #FEF3C7; color: #92400E; opacity: 0.7; }
+  .opp-content .rating-pill.cool { background: #F3F4F6; color: var(--d365-text-secondary); }
+
+  .opp-content .opp-meta {
+    font-size: 12px;
+    color: var(--d365-text-secondary);
+    margin-top: 3px;
+  }
+  .opp-content .opp-meta strong { color: var(--d365-text); font-weight: 500; }
+
+  .opp-stage {
+    font-size: 11px;
+    color: var(--d365-text-tertiary);
+    padding: 4px 10px;
+    background: #F3F2F1;
+    border-radius: 10px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .opp-value {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--d365-text);
+    letter-spacing: -0.01em;
+    text-align: right;
+  }
+  .opp-value .unit { font-size: 11px; color: var(--d365-text-tertiary); }
+
+  .relay-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px 8px 10px;
+    background: var(--lenovo-ink);
+    color: white;
+    border-radius: 6px;
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .relay-badge.featured::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 6px;
+    box-shadow: 0 0 0 0 rgba(226, 35, 26, 0.5);
+    animation: relay-glow 2s ease-out infinite;
+    pointer-events: none;
+  }
+  @keyframes relay-glow {
+    0% { box-shadow: 0 0 0 0 rgba(226, 35, 26, 0.4); }
+    100% { box-shadow: 0 0 0 10px rgba(226, 35, 26, 0); }
+  }
+  .relay-badge:hover { background: var(--lenovo-red); transform: translateY(-1px); }
+  .relay-badge .mark {
+    width: 22px; height: 22px;
+    background: var(--lenovo-red);
+    border-radius: 4px;
+    display: grid; place-items: center;
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: white;
+  }
+  .relay-badge .label {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1px;
+  }
+  .relay-badge .label .top {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    font-weight: 700;
+  }
+  .relay-badge .label .bottom {
+    font-size: 11.5px;
+  }
+
+  .relay-badge-working {
+    background: #1C232B;
+    animation: working-bg 1.5s ease-in-out infinite alternate;
+  }
+  @keyframes working-bg {
+    from { background: #1C232B; }
+    to { background: #2A343F; }
+  }
+  .relay-badge-working .mark {
+    animation: relay-spin 1.2s linear infinite;
+  }
+  @keyframes relay-spin {
+    from { transform: rotate(0); }
+    to { transform: rotate(360deg); }
+  }
+
+  .no-relay {
+    font-size: 11px;
+    color: var(--d365-text-tertiary);
+    padding: 8px 14px;
+    border: 1px dashed var(--d365-border-strong);
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  /* ========== Incoming MQL toast ========== */
+  .mql-toast {
+    position: fixed;
+    top: 68px;
+    right: 40px;
+    background: var(--lenovo-ink);
+    color: white;
+    border-radius: 8px;
+    padding: 14px 18px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 50;
+    max-width: 420px;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+  .mql-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .mql-toast::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--lenovo-red);
+    border-radius: 8px 8px 0 0;
+  }
+  .mql-toast .toast-mark {
+    width: 32px; height: 32px;
+    background: var(--marketo-purple);
+    border-radius: 5px;
+    display: grid; place-items: center;
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: white;
+    flex-shrink: 0;
+  }
+  .mql-toast .toast-body { flex: 1; }
+  .mql-toast .toast-head {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 2px;
+  }
+  .mql-toast .toast-text {
+    font-size: 12.5px;
+    line-height: 1.4;
+  }
+  .mql-toast .toast-text strong { color: white; font-weight: 600; }
+
+  /* ===================== FULL BRIEFING VIEW ===================== */
+  .briefing-view {
+    position: fixed;
+    inset: 0;
+    background: var(--d365-bg);
+    z-index: 100;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .briefing-view.open { display: flex; }
+
+  .briefing-header {
+    background: white;
+    padding: 18px 48px;
+    border-bottom: 1px solid var(--d365-border);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .briefing-header .back-btn {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px;
+    color: var(--d365-text-secondary);
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: all 0.15s;
+    background: none; border: none;
+    font-family: inherit;
+  }
+  .briefing-header .back-btn:hover { background: #F3F2F1; color: var(--d365-text); }
+
+  .briefing-header .breadcrumb {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12.5px;
+    color: var(--d365-text-secondary);
+  }
+  .briefing-header .breadcrumb .sep { color: var(--d365-text-tertiary); }
+  .briefing-header .breadcrumb .current { color: var(--d365-text); font-weight: 500; }
+
+  .briefing-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+  }
+  .briefing-actions .action {
+    padding: 7px 14px;
+    font-size: 12px;
+    color: var(--d365-text);
+    background: white;
+    border: 1px solid var(--d365-border-strong);
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .briefing-actions .action.primary {
+    background: var(--d365-blue);
+    color: white;
+    border-color: var(--d365-blue);
+  }
+
+  .briefing-content {
+    flex: 1;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 0;
+  }
+
+  .briefing-main {
+    padding: 40px 60px 60px;
+    max-width: 820px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .brief-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--lenovo-red);
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+  .brief-tag .mark {
+    width: 18px; height: 18px;
+    background: var(--lenovo-ink);
+    color: white;
+    border-radius: 3px;
+    display: grid; place-items: center;
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 11px;
+  }
+
+  .brief-title {
+    font-family: 'Fraunces', serif;
+    font-size: 36px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: var(--d365-text);
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+  .brief-sub {
+    font-size: 14px;
+    color: var(--d365-text-secondary);
+    line-height: 1.6;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--d365-border);
+  }
+  .brief-sub em { font-style: italic; }
+
+  .brief-section { margin-bottom: 36px; }
+  .brief-section h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--d365-text-secondary);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+  }
+  .brief-section h3::before { content: ''; width: 20px; height: 1px; background: var(--lenovo-red); }
+  .brief-section h3 .lenovo-tag {
+    margin-left: auto;
+    font-size: 9.5px;
+    padding: 2px 8px;
+    background: var(--lenovo-red-soft);
+    color: var(--lenovo-red);
+    border-radius: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    font-family: 'Inter', sans-serif;
+  }
+  .brief-section p {
+    font-size: 14px;
+    color: var(--d365-text);
+    line-height: 1.7;
+  }
+  .brief-section p + p { margin-top: 12px; }
+  .brief-section p strong { font-weight: 600; }
+
+  /* ========== Marketo Signal Layer (NEW, data-depth story) ========== */
+  .signal-layer {
+    background: linear-gradient(135deg, var(--marketo-purple-light) 0%, #F8F5FD 100%);
+    border: 1px solid #D9CFF0;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .signal-layer::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--marketo-purple);
+  }
+  .signal-layer-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .signal-layer-head .marketo-mark {
+    width: 24px; height: 24px;
+    background: var(--marketo-purple);
+    color: white;
+    border-radius: 4px;
+    display: grid; place-items: center;
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .signal-layer-head .title {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--d365-text);
+    letter-spacing: -0.01em;
+  }
+  .signal-layer-head .subtitle {
+    font-size: 11px;
+    color: var(--d365-text-secondary);
+    margin-top: 1px;
+  }
+
+  .signal-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .signal-col {
+    background: white;
+    border: 1px solid rgba(92, 75, 151, 0.15);
+    border-radius: 6px;
+    padding: 14px 16px;
+  }
+  .signal-col .col-head {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--d365-border);
+  }
+  .signal-col.generic .col-head { color: var(--d365-text-tertiary); }
+  .signal-col.relay .col-head { color: var(--lenovo-red); }
+  .signal-col .col-subhead {
+    font-size: 10.5px;
+    color: var(--d365-text-tertiary);
+    margin-bottom: 10px;
+    font-style: italic;
+  }
+  .signal-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .signal-item {
+    display: grid;
+    grid-template-columns: 14px 1fr;
+    gap: 8px;
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--d365-text);
+    align-items: flex-start;
+  }
+  .signal-col.generic .signal-item { color: var(--d365-text-secondary); }
+  .signal-item .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+  .signal-col.generic .signal-item .dot { background: var(--d365-text-tertiary); }
+  .signal-col.relay .signal-item .dot { background: var(--lenovo-red); }
+  .signal-item.missed { color: var(--d365-text-tertiary); opacity: 0.7; }
+  .signal-item.missed .dot { background: #D4D4D8; }
+  .signal-item .tag {
+    font-size: 9.5px;
+    padding: 1px 6px;
+    background: var(--lenovo-red-soft);
+    color: var(--lenovo-red);
+    border-radius: 8px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin-left: 4px;
+  }
+
+  .signal-layer-footnote {
+    font-size: 11.5px;
+    color: var(--d365-text-secondary);
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed rgba(92, 75, 151, 0.2);
+    line-height: 1.55;
+    font-style: italic;
+  }
+
+  /* ========== Product fit (moved to top, prominent) ========== */
+  .products { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+  .product-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    padding: 14px 18px;
+    background: white;
+    border: 1px solid var(--d365-border);
+    border-radius: 6px;
+    align-items: center;
+  }
+  .product-row.top-pick {
+    border: 1.5px solid var(--lenovo-red);
+    background: linear-gradient(to right, var(--lenovo-red-soft), white 30%);
+  }
+  .product-row .pn { font-weight: 600; color: var(--d365-text); font-size: 13.5px; }
+  .product-row .pw { font-size: 12px; color: var(--d365-text-secondary); margin-top: 3px; }
+  .product-row .pn .top-pick-tag {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 9.5px;
+    padding: 2px 7px;
+    background: var(--lenovo-red);
+    color: white;
+    border-radius: 9px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    vertical-align: middle;
+  }
+  .fit-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: #DFF6DD;
+    color: var(--accent-green);
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-weight: 600;
+  }
+  .fit-badge.medium { background: #FEF3C7; color: #92400E; }
+
+  .insight-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .insight-card {
+    padding: 16px 18px;
+    background: white;
+    border: 1px solid var(--d365-border);
+    border-radius: 6px;
+  }
+  .insight-card .t { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--lenovo-red); font-weight: 700; margin-bottom: 4px; }
+  .insight-card .h { font-size: 14px; font-weight: 600; color: var(--d365-text); margin-bottom: 4px; letter-spacing: -0.01em; }
+  .insight-card .b { font-size: 12.5px; color: var(--d365-text-secondary); line-height: 1.55; }
+
+  .talk-points { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
+  .talk-point {
+    display: flex; gap: 16px;
+    padding: 16px 18px;
+    background: white;
+    border: 1px solid var(--d365-border);
+    border-radius: 6px;
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+  .talk-point .n {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 24px;
+    color: var(--lenovo-red);
+    line-height: 1;
+    flex-shrink: 0;
+    font-weight: 500;
+  }
+  .talk-point strong { font-weight: 600; color: var(--d365-text); }
+
+  .sources-section {
+    padding-top: 24px;
+    border-top: 1px solid var(--d365-border);
+    margin-top: 20px;
+  }
+  .sources-section h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--d365-text-tertiary);
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  .sources { display: flex; flex-wrap: wrap; gap: 8px; }
+  .source-chip {
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 5px 10px;
+    background: white;
+    border: 1px solid var(--d365-border);
+    border-radius: 3px;
+    color: var(--d365-text-secondary);
+  }
+  .source-chip.lenovo-internal {
+    background: var(--lenovo-red-soft);
+    color: var(--lenovo-red);
+    border-color: rgba(226, 35, 26, 0.2);
+    font-weight: 600;
+  }
+  .source-chip.marketo {
+    background: var(--marketo-purple-light);
+    color: var(--marketo-purple);
+    border-color: rgba(92, 75, 151, 0.2);
+    font-weight: 600;
+  }
+
+  /* Right rail in briefing */
+  .brief-rail {
+    background: white;
+    border-left: 1px solid var(--d365-border);
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    overflow-y: auto;
+  }
+  .rail-block {
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--d365-border);
+  }
+  .rail-block:last-child { border-bottom: none; }
+  .rail-block h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--d365-text-tertiary);
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+
+  .lead-card {
+    background: var(--paper-warm);
+    border-radius: 6px;
+    padding: 14px 16px;
+  }
+  .lead-card .name {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--d365-text);
+    letter-spacing: -0.01em;
+  }
+  .lead-card .role {
+    font-size: 12px;
+    color: var(--d365-text-secondary);
+    margin-top: 3px;
+  }
+  .lead-card .company {
+    font-size: 12px;
+    color: var(--d365-text);
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--d365-border);
+    font-weight: 500;
+  }
+
+  .trace-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .trace-row {
+    display: grid;
+    grid-template-columns: 16px 1fr auto;
+    gap: 10px;
+    font-size: 11.5px;
+    align-items: center;
+  }
+  .trace-row .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent-green);
+  }
+  .trace-row .lbl { color: var(--d365-text); }
+  .trace-row .t { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--d365-text-tertiary); }
+
+  .rail-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .rail-stat .l { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--d365-text-tertiary); font-weight: 600; margin-bottom: 2px; }
+  .rail-stat .v { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 500; color: var(--d365-text); letter-spacing: -0.01em; }
+
+  .data-source-item {
+    display: grid;
+    grid-template-columns: 16px 1fr;
+    gap: 10px;
+    font-size: 11.5px;
+    padding: 6px 0;
+    align-items: flex-start;
+    border-bottom: 1px dashed var(--d365-border);
+  }
+  .data-source-item:last-child { border-bottom: none; }
+  .data-source-item .icon {
+    width: 16px; height: 16px;
+    border-radius: 3px;
+    display: grid; place-items: center;
+    font-size: 9px;
+    font-weight: 700;
+    font-family: 'Fraunces', serif;
+    color: white;
+    margin-top: 1px;
+  }
+  .data-source-item .icon.marketo { background: var(--marketo-purple); }
+  .data-source-item .icon.lenovo { background: var(--lenovo-red); }
+  .data-source-item .icon.public { background: #6B7280; }
+  .data-source-item .lbl { color: var(--d365-text); font-weight: 500; }
+  .data-source-item .sub { color: var(--d365-text-tertiary); font-size: 10.5px; margin-top: 1px; font-family: 'JetBrains Mono', monospace; }
+
+  /* ========== v4 TIGHT BRIEFING STYLES ========== */
+
+  /* Briefing lead — single practical sentence */
+  .brief-lead {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    color: var(--d365-text);
+    line-height: 1.35;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--d365-border);
+  }
+
+  /* Lead Summary (main seller block) */
+  .lead-summary {
+    margin-bottom: 36px;
+  }
+  .lead-summary-head {
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--d365-text-secondary);
+    font-weight: 600;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--d365-border);
+  }
+  .lead-summary-text {
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--d365-text);
+    margin-bottom: 18px;
+  }
+  .lead-summary-text strong {
+    font-weight: 600;
+  }
+
+  /* MQL trigger band (Marketo-purple accent, 宽的事件信息) */
+  .mql-trigger-band {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 18px;
+    background: linear-gradient(90deg, var(--marketo-purple-light) 0%, #F8F5FD 100%);
+    border: 1px solid #D9CFF0;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .mql-trigger-band::before {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0; left: 0;
+    width: 3px;
+    background: var(--marketo-purple);
+  }
+  .mql-trigger-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--marketo-purple-dark, #3F3370);
+    text-transform: uppercase;
+    white-space: nowrap;
+    padding-right: 14px;
+    border-right: 1px solid rgba(92, 75, 151, 0.2);
+    flex-shrink: 0;
+  }
+  .mql-trigger-text {
+    font-size: 13px;
+    color: var(--d365-text);
+    line-height: 1.5;
+  }
+  .mql-trigger-text strong {
+    font-weight: 600;
+  }
+
+  .lead-summary-facts {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .fact-box {
+    background: white;
+    border: 1px solid var(--d365-border);
+    border-radius: 6px;
+    padding: 12px 14px;
+  }
+  .fact-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--lenovo-red);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .fact-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--d365-text);
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    margin-bottom: 3px;
+  }
+  .fact-note {
+    font-size: 11px;
+    color: var(--d365-text-secondary);
+    font-style: italic;
+    line-height: 1.4;
+  }
+
+  /* Signal depth collapse — special treatment (quieter than other collapse) */
+  .signal-depth-collapse {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--d365-border-strong);
+  }
+  .signal-depth-collapse .collapse-toggle {
+    background: #FAFAF7;
+    border-color: var(--d365-border);
+  }
+  .signal-depth-collapse .collapse-toggle .toggle-label {
+    color: var(--d365-text-secondary);
+    font-weight: 500;
+  }
+  .signal-depth-intro {
+    font-size: 12.5px;
+    color: var(--d365-text-secondary);
+    line-height: 1.6;
+    font-style: italic;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed var(--d365-border);
+  }
+  .signal-depth-collapse .signal-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .signal-depth-collapse .signal-col {
+    background: white;
+    border: 1px solid rgba(92, 75, 151, 0.15);
+    border-radius: 6px;
+    padding: 14px 16px;
+  }
+  .signal-depth-collapse .signal-col .col-head {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--d365-border);
+  }
+  .signal-depth-collapse .signal-col.generic .col-head { color: var(--d365-text-tertiary); }
+  .signal-depth-collapse .signal-col.relay .col-head { color: var(--lenovo-red); }
+  .signal-depth-collapse .col-subhead {
+    font-size: 10.5px;
+    color: var(--d365-text-tertiary);
+    margin-bottom: 10px;
+    font-style: italic;
+  }
+  .signal-depth-collapse .signal-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .signal-depth-collapse .signal-item {
+    display: grid;
+    grid-template-columns: 14px 1fr;
+    gap: 8px;
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--d365-text);
+    align-items: flex-start;
+  }
+  .signal-depth-collapse .signal-col.generic .signal-item { color: var(--d365-text-secondary); }
+  .signal-depth-collapse .signal-item .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+  .signal-depth-collapse .signal-col.generic .signal-item .dot { background: var(--d365-text-tertiary); }
+  .signal-depth-collapse .signal-col.relay .signal-item .dot { background: var(--lenovo-red); }
+  .signal-depth-collapse .collapse-panel.open {
+    max-height: 1200px;
+  }
+
+  /* Headline punchy version */
+  .brief-title-tight {
+    font-family: 'Fraunces', serif;
+    font-size: 40px;
+    font-weight: 400;
+    letter-spacing: -0.025em;
+    color: var(--d365-text);
+    line-height: 1.08;
+    margin-bottom: 14px;
+  }
+  .brief-sub-tight {
+    font-size: 15px;
+    color: var(--d365-text-secondary);
+    line-height: 1.6;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--d365-border);
+  }
+
+  /* Signal layer HERO — larger, more prominent than original */
+  .signal-layer-hero {
+    background: linear-gradient(135deg, var(--marketo-purple-light) 0%, #F8F5FD 100%);
+    border: 1px solid #D9CFF0;
+    border-radius: 10px;
+    padding: 26px 28px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .signal-layer-hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--marketo-purple);
+  }
+
+  /* Product block — 3 products, clean layout */
+  .product-block {
+    margin-bottom: 32px;
+  }
+  .product-block-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--d365-border);
+  }
+  .product-block-tag {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--lenovo-red);
+    font-weight: 700;
+  }
+  .product-block-title {
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--d365-text-secondary);
+    font-weight: 600;
+  }
+
+  .product-row-v4 {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 18px;
+    padding: 14px 18px;
+    background: white;
+    border: 1px solid var(--d365-border);
+    border-radius: 6px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .product-row-v4.top-pick-v4 {
+    border: 1.5px solid var(--lenovo-red);
+    background: linear-gradient(to right, var(--lenovo-red-soft), white 40%);
+    box-shadow: 0 2px 8px rgba(226, 35, 26, 0.06);
+  }
+  .product-name-v4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--d365-text);
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .top-pick-pill {
+    font-size: 9.5px;
+    padding: 2px 8px;
+    background: var(--lenovo-red);
+    color: white;
+    border-radius: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+  .product-why-v4 {
+    font-size: 12.5px;
+    color: var(--d365-text-secondary);
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+  .fit-badge-v4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: #DFF6DD;
+    color: var(--accent-green);
+    padding: 5px 12px;
+    border-radius: 4px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .fit-badge-v4.medium { background: #FEF3C7; color: #92400E; }
+
+  /* Collapse sections */
+  .collapse-section {
+    margin-bottom: 8px;
+  }
+  .collapse-toggle {
+    width: 100%;
+    background: white;
+    border: 1px solid var(--d365-border);
+    border-radius: 6px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .collapse-toggle:hover {
+    background: #F9F8F7;
+    border-color: var(--d365-border-strong);
+  }
+  .collapse-toggle .chev {
+    color: var(--d365-text-tertiary);
+    font-size: 12px;
+    transition: transform 0.25s;
+    width: 12px;
+  }
+  .collapse-toggle.open .chev {
+    transform: rotate(90deg);
+  }
+  .collapse-toggle .toggle-label {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--d365-text);
+    letter-spacing: -0.01em;
+  }
+  .collapse-toggle .toggle-hint {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--d365-text-tertiary);
+    font-style: italic;
+  }
+
+  .collapse-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, padding 0.35s ease;
+    padding: 0 18px;
+    background: #FAFAF7;
+    border-left: 1px solid var(--d365-border);
+    border-right: 1px solid var(--d365-border);
+    border-bottom: 1px solid var(--d365-border);
+    border-radius: 0 0 6px 6px;
+    margin-top: -1px;
+  }
+  .collapse-panel.open {
+    max-height: 800px;
+    padding: 16px 18px 18px;
+  }
+  .collapse-panel p {
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--d365-text);
+  }
+  .collapse-panel p + p {
+    margin-top: 10px;
+  }
+  .collapse-panel p strong { font-weight: 600; }
+
+  /* Sources block — direct display */
+  .sources-block {
+    padding-top: 24px;
+    margin-top: 24px;
+    border-top: 1px solid var(--d365-border);
+  }
+  .sources-head {
+    font-family: 'Fraunces', serif;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--d365-text-tertiary);
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+
+  /* Right rail quality block */
+  .rail-quality-line {
+    font-size: 12.5px;
+    color: var(--d365-text);
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+  .rail-quality-line strong {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .rail-quality-note {
+    font-size: 11px;
+    line-height: 1.55;
+    color: var(--d365-text-secondary);
+  }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb { background: #C8C6C4; border-radius: 5px; border: 2px solid transparent; background-clip: padding-box; }
+  ::-webkit-scrollbar-thumb:hover { background: #A19F9D; border: 2px solid transparent; background-clip: padding-box; }
+
+</style>
+</head>
+<body>
+
+<!-- ===== APP BAR ===== -->
+<div class="app-bar">
+  <div class="ms-waffle">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6"/><rect x="9" y="1" width="6" height="6"/><rect x="1" y="9" width="6" height="6"/><rect x="9" y="9" width="6" height="6"/></svg>
+  </div>
+  <div class="app-name">
+    <span>Dynamics 365</span>
+    <span class="sep">|</span>
+    <span class="module">Sales Hub</span>
+  </div>
+  <div class="app-bar-search">⌕ Search</div>
+  <div class="app-bar-icons">
+    <div class="icon">⚙</div>
+    <div class="icon">?</div>
+  </div>
+  <div class="avatar">MT</div>
+</div>
+
+<!-- ===== LAYOUT ===== -->
+<div class="layout">
+
+  <div class="left-rail">
+    <div class="rail-icon">◫</div>
+    <div class="rail-icon active">◉</div>
+    <div class="rail-icon">☰</div>
+    <div class="rail-icon">◈</div>
+  </div>
+
+  <div class="nav-panel">
+    <div class="nav-heading">Sales</div>
+    <div class="section-title">My Work</div>
+    <div class="nav-link active"><span class="icon">◉</span> My Day</div>
+    <div class="nav-link"><span class="icon">◈</span> Dashboards</div>
+    <div class="nav-link"><span class="icon">◈</span> Activities</div>
+    <div class="section-title" style="margin-top:8px;">Customers</div>
+    <div class="nav-link"><span class="icon">◈</span> Accounts</div>
+    <div class="nav-link"><span class="icon">◈</span> Contacts</div>
+    <div class="section-title" style="margin-top:8px;">Sales</div>
+    <div class="nav-link"><span class="icon">◈</span> Leads</div>
+    <div class="nav-link"><span class="icon">◈</span> Opportunities</div>
+    <div class="nav-link"><span class="icon">◈</span> Quotes</div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- ===== Relay status bar (面状存在感) ===== -->
+    <div class="relay-status-bar">
+      <div class="relay-badge-mini">
+        <div class="mark">R</div>
+        <span>Relay</span>
+      </div>
+      <div class="divider"></div>
+      <div class="info">
+        <span class="dot-green"></span>
+        <span><strong>3 MQLs enriched overnight</strong> · 1 skipped (low fit) · avg 1m 52s</span>
+      </div>
+      <div class="divider"></div>
+      <div class="info">
+        <span>Last sync: <strong>2 min ago</strong></span>
+      </div>
+      <div class="data-sources">
+        <span>Connected:</span>
+        <span class="chip">Marketo</span>
+        <span class="chip">PSREF</span>
+        <span class="chip">Battle cards</span>
+        <span class="chip">ISV matrix</span>
+      </div>
+    </div>
+
+    <!-- GREETING -->
+    <div class="greeting">
+      <div class="time">Monday · Apr 20, 2026 · 8:42 AM EST</div>
+      <h1>Good morning, Marcus. <em>Seven things</em> on your plate today.</h1>
+      <div class="sub">Relay prepared briefings for three MQLs overnight · two require action before noon.</div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-strip">
+      <div class="stat-box">
+        <div class="l">Open Opportunities</div>
+        <div class="n">23</div>
+        <div class="delta">+3 this week</div>
+      </div>
+      <div class="stat-box">
+        <div class="l">Pipeline</div>
+        <div class="n">$2.4<span class="unit">M</span></div>
+        <div class="delta">+$280K vs. last quarter</div>
+      </div>
+      <div class="stat-box">
+        <div class="l">New MQLs Today</div>
+        <div class="n">4</div>
+        <div class="delta">3 enriched by Relay</div>
+      </div>
+      <div class="stat-box">
+        <div class="l">Response Time</div>
+        <div class="n">4.2<span class="unit">h</span></div>
+        <div class="delta neg">target &lt; 2h</div>
+      </div>
+    </div>
+
+    <!-- PRIORITY SECTION -->
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2 style="display:inline-block;">Priority this morning <span class="count" id="priority-count">3 items</span></h2>
+        </div>
+        <div class="actions">
+          <button class="filter-btn active">All</button>
+          <button class="filter-btn">With Relay briefing</button>
+          <button class="simulate-btn" id="simulate-btn">
+            <span class="pulse-dot"></span>
+            Simulate new MQL
+          </button>
+        </div>
+      </div>
+
+      <div class="opp-list" id="opp-list">
+
+        <!-- FEATURED: Meridian -->
+        <div class="opp-card featured" id="featured-card">
+          <div class="opp-priority">1.</div>
+          <div class="opp-content">
+            <div class="opp-title">
+              Meridian Health · Radiology AI Infrastructure
+              <span class="rating-pill hot">HOT · 92</span>
+            </div>
+            <div class="opp-meta">
+              <strong>Dr. Amelia Okafor</strong> · Director, Clinical Informatics · MQL via ThinkStation whitepaper · 14 min ago
+            </div>
+          </div>
+          <div class="opp-stage">Develop</div>
+          <div class="opp-value">$—<br><span style="font-size:10px;color:var(--d365-text-tertiary);">est. Q3</span></div>
+          <div class="relay-badge featured" id="open-brief">
+            <div class="mark">R</div>
+            <div class="label">
+              <div class="top">RELAY</div>
+              <div class="bottom">Briefing ready</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Other rows -->
+        <div class="opp-card">
+          <div class="opp-priority">2.</div>
+          <div class="opp-content">
+            <div class="opp-title">
+              Westfield Medical Group · Endpoint Refresh
+              <span class="rating-pill warm">WARM · 68</span>
+            </div>
+            <div class="opp-meta">
+              <strong>Ryan Chen</strong> · Director of IT · Return visitor · 2 days ago
+            </div>
+          </div>
+          <div class="opp-stage">Qualify</div>
+          <div class="opp-value">$180K</div>
+          <div class="relay-badge">
+            <div class="mark">R</div>
+            <div class="label">
+              <div class="top">RELAY</div>
+              <div class="bottom">Briefing ready</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="opp-card">
+          <div class="opp-priority">3.</div>
+          <div class="opp-content">
+            <div class="opp-title">
+              Ashford Clinical Labs · ThinkSystem Quote Follow-up
+              <span class="rating-pill cool">MQL · 54</span>
+            </div>
+            <div class="opp-meta">
+              <strong>Priya Raman</strong> · Lab Director · Quote sent Apr 11 · awaiting reply
+            </div>
+          </div>
+          <div class="opp-stage">Propose</div>
+          <div class="opp-value">$94K</div>
+          <div class="no-relay">Skipped · low fit score</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- REST OF PIPELINE -->
+    <div class="section" style="padding-top:0;">
+      <div class="section-head">
+        <h2>Rest of pipeline <span class="count">20 items</span></h2>
+      </div>
+
+      <div class="opp-list">
+        <div class="opp-card">
+          <div class="opp-priority"></div>
+          <div class="opp-content">
+            <div class="opp-title">Beacon Hill Imaging · ThinkStation trial <span class="rating-pill warm">WARM</span></div>
+            <div class="opp-meta">Follow-up scheduled for Thursday</div>
+          </div>
+          <div class="opp-stage">Develop</div>
+          <div class="opp-value">$320K</div>
+          <div class="no-relay">Monitoring · no new signal</div>
+        </div>
+
+        <div class="opp-card">
+          <div class="opp-priority"></div>
+          <div class="opp-content">
+            <div class="opp-title">Cleveland Ortho Center · PC fleet proposal <span class="rating-pill warm">WARM</span></div>
+            <div class="opp-meta">Proposal under review · reply expected this week</div>
+          </div>
+          <div class="opp-stage">Propose</div>
+          <div class="opp-value">$560K</div>
+          <div class="no-relay">Monitoring · no new signal</div>
+        </div>
+
+        <div class="opp-card">
+          <div class="opp-priority"></div>
+          <div class="opp-content">
+            <div class="opp-title">Pinnacle Radiology Partners · Workstation eval <span class="rating-pill cool">EARLY</span></div>
+            <div class="opp-meta">No activity in 14 days</div>
+          </div>
+          <div class="opp-stage">Qualify</div>
+          <div class="opp-value">$—</div>
+          <div class="no-relay">Stale</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ MQL TOAST ============ -->
+<div class="mql-toast" id="mql-toast">
+  <div class="toast-mark">M</div>
+  <div class="toast-body">
+    <div class="toast-head">● New MQL · Marketo</div>
+    <div class="toast-text"><strong>Dr. Sarah Chen</strong> · VP Clinical Ops at Lakeshore Regional Medical · MQL score 88 · Relay enriching now…</div>
+  </div>
+</div>
+
+<!-- ============ FULL BRIEFING VIEW ============ -->
+<div class="briefing-view" id="briefing-view">
+  <div class="briefing-header">
+    <button class="back-btn" id="back-btn">← Back to My Day</button>
+    <div class="breadcrumb">
+      <span>My Day</span>
+      <span class="sep">›</span>
+      <span>Meridian Health · Radiology AI Infrastructure</span>
+      <span class="sep">›</span>
+      <span class="current">Relay Briefing</span>
+    </div>
+    <div class="briefing-actions">
+      <button class="action">Export PDF</button>
+      <button class="action">Share</button>
+      <button class="action primary">Start call preparation →</button>
+    </div>
+  </div>
+
+  <div class="briefing-content">
+    <div class="briefing-main">
+
+      <div class="brief-tag">
+        <div class="mark">R</div>
+        <span>Relay · First-call briefing · Generated 14 min ago</span>
+      </div>
+
+      <!-- ========= BRIEFING LEAD (一句实用概括) ========= -->
+      <p class="brief-lead">Dr. Okafor is specifying hardware for Meridian's Aidoc radiology AI rollout. Q3 capex window closes in 10 weeks.</p>
+
+      <!-- ========= LEAD SUMMARY (seller 最需要看的主块) ========= -->
+      <div class="lead-summary">
+        <div class="lead-summary-head">Lead summary</div>
+        <p class="lead-summary-text">
+          Dr. Amelia Okafor leads clinical informatics at Meridian Health — a three-hospital regional system in Columbus, OH. She reports up through CMIO Dr. Rakesh Pillai, a public advocate for on-prem AI inference. Meridian announced an <strong>Aidoc partnership</strong> in January for stroke and PE triage, and Dr. Okafor's behavior this week suggests she's scoping the workstation hardware side of that rollout. Existing Dell Precision fleet is due for refresh; no structural lock-in.
+        </p>
+
+        <!-- MQL trigger band (why Marketo flagged her) -->
+        <div class="mql-trigger-band">
+          <div class="mql-trigger-label">MQL · Score 92</div>
+          <div class="mql-trigger-text">
+            Triggered by <strong>"ThinkStation for Medical Imaging" whitepaper</strong> download · paid search entry · healthcare AI campaign
+          </div>
+        </div>
+
+        <div class="lead-summary-facts">
+          <div class="fact-box">
+            <div class="fact-label">Role</div>
+            <div class="fact-value">Influencer, not final decision</div>
+            <div class="fact-note">defers to CMIO + CIO</div>
+          </div>
+          <div class="fact-box">
+            <div class="fact-label">Urgency</div>
+            <div class="fact-value">~10 weeks</div>
+            <div class="fact-note">Q3 capex lock, FY starts July</div>
+          </div>
+          <div class="fact-box">
+            <div class="fact-label">Intent</div>
+            <div class="fact-value">Hardware spec, not discovery</div>
+            <div class="fact-note">already past research stage</div>
+          </div>
+          <div class="fact-box">
+            <div class="fact-label">Competition</div>
+            <div class="fact-value">Dell Precision (incumbent)</div>
+            <div class="fact-note">real switch cost, no lock-in</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========= PRODUCT FIT (3 个都显示，精简文案) ========= -->
+      <div class="product-block">
+        <div class="product-block-head">
+          <div class="product-block-tag">Lenovo · PSREF + ISV Matrix</div>
+          <div class="product-block-title">Recommended product fit</div>
+        </div>
+
+        <div class="product-row-v4 top-pick-v4">
+          <div class="product-main">
+            <div class="product-name-v4">ThinkStation P8 <span class="top-pick-pill">TOP PICK</span></div>
+            <div class="product-why-v4">Threadripper PRO · RTX 6000 Ada. Matches Aidoc's on-prem inference spec. ISV-certified for medical imaging.</div>
+          </div>
+          <div class="fit-badge-v4">FIT · 0.92</div>
+        </div>
+
+        <div class="product-row-v4">
+          <div class="product-main">
+            <div class="product-name-v4">ThinkStation P5</div>
+            <div class="product-why-v4">Xeon W · RTX A4000. Secondary reading station for phased rollout across 3 hospitals.</div>
+          </div>
+          <div class="fit-badge-v4">FIT · 0.78</div>
+        </div>
+
+        <div class="product-row-v4">
+          <div class="product-main">
+            <div class="product-name-v4">ThinkPad P16</div>
+            <div class="product-why-v4">Mobile workstation for roaming informaticists. Mention only if asked.</div>
+          </div>
+          <div class="fit-badge-v4 medium">FIT · 0.54</div>
+        </div>
+      </div>
+
+      <!-- ========= COLLAPSED SECTIONS ========= -->
+      <!-- Talk points 默认展开 -->
+      <div class="collapse-section">
+        <button class="collapse-toggle open" data-expand="talk-points">
+          <span class="chev">▸</span>
+          <span class="toggle-label">Three talk points for the first call</span>
+          <span class="toggle-hint">Open with Aidoc · frame CMIO · probe Dell</span>
+        </button>
+        <div class="collapse-panel open" id="talk-points">
+          <div class="talk-points">
+            <div class="talk-point"><div class="n">1.</div><div><strong>Open with the Aidoc angle, not the hardware.</strong> Ask where inference latency shows up in workflow. Let her surface it, then bridge to ThinkStation.</div></div>
+            <div class="talk-point"><div class="n">2.</div><div><strong>Reference CMIO Pillai's on-prem stance.</strong> Signal you understand Meridian's philosophy. Differentiator vs. cloud-first competitors.</div></div>
+            <div class="talk-point"><div class="n">3.</div><div><strong>Probe Dell incumbency lightly.</strong> Offer a side-by-side pilot on 1–2 stations. Low-friction ask.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="collapse-section">
+        <button class="collapse-toggle" data-expand="account-ctx">
+          <span class="chev">▸</span>
+          <span class="toggle-label">Account context</span>
+          <span class="toggle-hint">Meridian · 3 hospitals · Aidoc partnership</span>
+        </button>
+        <div class="collapse-panel" id="account-ctx">
+          <p>Meridian is an independent regional health system with three hospitals and ~2.1M annual outpatient visits. In January they announced a <strong>radiology AI partnership with Aidoc</strong> for stroke and PE triage, and their 2025 capital plan earmarks spend for imaging infrastructure refresh. Current reading stations: aging Dell Precision towers on a 2020 refresh cycle.</p>
+          <p>Informatics reports up through CMIO Dr. Rakesh Pillai — a public advocate for on-prem AI inference in clinical settings. Shortens the "why not cloud?" conversation.</p>
+        </div>
+      </div>
+
+      <div class="collapse-section">
+        <button class="collapse-toggle" data-expand="why-download">
+          <span class="chev">▸</span>
+          <span class="toggle-label">Why she downloaded the paper</span>
+          <span class="toggle-hint">Signal · Role · Timing · Risk</span>
+        </button>
+        <div class="collapse-panel" id="why-download">
+          <div class="insight-grid">
+            <div class="insight-card"><div class="t">Signal</div><div class="h">Workstation-centric paper</div><div class="b">She's scoping hardware, not browsing AI content.</div></div>
+            <div class="insight-card"><div class="t">Role</div><div class="h">Clinical + technical</div><div class="b">Champion internally, defers to CMIO + CIO for purchase.</div></div>
+            <div class="insight-card"><div class="t">Timing</div><div class="h">Q3 budget window</div><div class="b">FY starts July. ~10 weeks to influence spec.</div></div>
+            <div class="insight-card"><div class="t">Risk</div><div class="h">Dell incumbency</div><div class="b">Real switching cost, but no structural software lock.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Signal depth: 降级为折叠，给 architect / audit 看的 -->
+      <div class="collapse-section signal-depth-collapse">
+        <button class="collapse-toggle" data-expand="signal-depth">
+          <span class="chev">▸</span>
+          <span class="toggle-label">Signal depth · audit trail</span>
+          <span class="toggle-hint">What Relay read from Marketo · 8 signals</span>
+        </button>
+        <div class="collapse-panel" id="signal-depth">
+          <div class="signal-depth-intro">
+            Not for daily seller use. This is the evidence layer — what Relay read from Marketo's raw stream, compared to what a D365-native agent would see. Useful when someone asks: "why did Relay conclude that?"
+          </div>
+          <div class="signal-compare">
+            <div class="signal-col generic">
+              <div class="col-head">Generic view · via D365 sync</div>
+              <div class="col-subhead">~15 fields make it into Dataverse.</div>
+              <div class="signal-list">
+                <div class="signal-item"><div class="dot"></div><div>Score: 92</div></div>
+                <div class="signal-item"><div class="dot"></div><div>Source: paid search</div></div>
+                <div class="signal-item"><div class="dot"></div><div>Last activity: whitepaper</div></div>
+                <div class="signal-item"><div class="dot"></div><div>Campaign: HC-AI-Q2</div></div>
+              </div>
+            </div>
+
+            <div class="signal-col relay">
+              <div class="col-head">Relay view · via Marketo API</div>
+              <div class="col-subhead">Full unfiltered behavioral stream.</div>
+              <div class="signal-list">
+                <div class="signal-item"><div class="dot"></div><div><strong>Visit sequence</strong>: specs → Aidoc → PSREF, in order</div></div>
+                <div class="signal-item"><div class="dot"></div><div><strong>Content affinity</strong>: 7 of 9 pages on on-prem inference</div></div>
+                <div class="signal-item"><div class="dot"></div><div><strong>Engagement rhythm</strong>: opens cluster Tue/Thu AM</div></div>
+                <div class="signal-item"><div class="dot"></div><div><strong>Form fill pattern</strong>: skipped nurture, went to spec sheet</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========= SOURCES (直接显示) ========= -->
+      <div class="sources-block">
+        <div class="sources-head">Sources · 13 total</div>
+        <div class="sources">
+          <span class="source-chip marketo">Marketo · Raw behavioral stream</span>
+          <span class="source-chip lenovo-internal">PSREF · ThinkStation P8/P5/P16</span>
+          <span class="source-chip lenovo-internal">Lenovo Healthcare battle card</span>
+          <span class="source-chip lenovo-internal">Aidoc ISV certification matrix</span>
+          <span class="source-chip">meridianhealth.org · Jan press</span>
+          <span class="source-chip">Meridian FY25 capital filing</span>
+          <span class="source-chip">LinkedIn · Dr. Okafor</span>
+          <span class="source-chip">LinkedIn · Dr. R. Pillai, CMIO</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT RAIL -->
+    <div class="brief-rail">
+
+      <div class="rail-block">
+        <h4>Lead</h4>
+        <div class="lead-card">
+          <div class="name">Dr. Amelia Okafor</div>
+          <div class="role">Director, Clinical Informatics</div>
+          <div class="company">Meridian Health System · Columbus, OH</div>
+        </div>
+      </div>
+
+      <div class="rail-block">
+        <h4>What Relay read</h4>
+        <div class="data-source-item">
+          <div class="icon marketo">M</div>
+          <div>
+            <div class="lbl">Marketo · raw stream</div>
+            <div class="sub">9 behavioral events</div>
+          </div>
+        </div>
+        <div class="data-source-item">
+          <div class="icon lenovo">L</div>
+          <div>
+            <div class="lbl">PSREF</div>
+            <div class="sub">3 SKUs matched</div>
+          </div>
+        </div>
+        <div class="data-source-item">
+          <div class="icon lenovo">L</div>
+          <div>
+            <div class="lbl">Healthcare battle card</div>
+            <div class="sub">Dell incumbency</div>
+          </div>
+        </div>
+        <div class="data-source-item">
+          <div class="icon lenovo">L</div>
+          <div>
+            <div class="lbl">ISV certification</div>
+            <div class="sub">Aidoc on-prem</div>
+          </div>
+        </div>
+        <div class="data-source-item">
+          <div class="icon public">W</div>
+          <div>
+            <div class="lbl">Public web</div>
+            <div class="sub">4 sources</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rail-block" style="border-bottom:none;">
+        <h4>Quality</h4>
+        <div class="rail-quality-line">
+          <strong>1m 48s</strong> · 13 sources · confidence 0.87
+        </div>
+        <div class="rail-quality-note">
+          All sources cited. Inference runs within Lenovo tenant. 30-day expiry on competitive context.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // ========== Briefing drawer ==========
+  const openBrief = document.getElementById('open-brief');
+  const briefingView = document.getElementById('briefing-view');
+  const backBtn = document.getElementById('back-btn');
+
+  openBrief.addEventListener('click', (e) => {
+    e.stopPropagation();
+    briefingView.classList.add('open');
+  });
+  backBtn.addEventListener('click', () => briefingView.classList.remove('open'));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') briefingView.classList.remove('open');
+  });
+
+  // ========== Live MQL simulation (the "D" in A+D) ==========
+  const simulateBtn = document.getElementById('simulate-btn');
+  const mqlToast = document.getElementById('mql-toast');
+  const oppList = document.getElementById('opp-list');
+  const priorityCount = document.getElementById('priority-count');
+
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  async function simulateMQL() {
+    simulateBtn.disabled = true;
+    simulateBtn.innerHTML = '<span class="pulse-dot"></span> MQL incoming…';
+
+    // 1. Toast slides in
+    await sleep(300);
+    mqlToast.classList.add('show');
+
+    // 2. After 1.2s, add incoming card to top of list with "working" state
+    await sleep(1200);
+    const newCard = document.createElement('div');
+    newCard.className = 'opp-card featured incoming';
+    newCard.innerHTML = `
+      <div class="opp-priority">●</div>
+      <div class="opp-content">
+        <div class="opp-title">
+          Lakeshore Regional Medical · AI Imaging Pilot
+          <span class="rating-pill hot">HOT · 88</span>
+        </div>
+        <div class="opp-meta">
+          <strong>Dr. Sarah Chen</strong> · VP Clinical Operations · just arrived via Marketo · enriching now
+        </div>
+      </div>
+      <div class="opp-stage">New</div>
+      <div class="opp-value">$—<br><span style="font-size:10px;color:var(--d365-text-tertiary);">TBD</span></div>
+      <div class="relay-badge relay-badge-working">
+        <div class="mark">R</div>
+        <div class="label">
+          <div class="top">RELAY</div>
+          <div class="bottom">Enriching…</div>
+        </div>
+      </div>
+    `;
+    oppList.insertBefore(newCard, oppList.firstChild);
+
+    // 3. Update the existing "featured" card to no longer be featured
+    const oldFeatured = document.getElementById('featured-card');
+    oldFeatured.classList.remove('featured');
+    const oldBadge = oldFeatured.querySelector('.relay-badge');
+    if (oldBadge) oldBadge.classList.remove('featured');
+    oldFeatured.querySelector('.opp-priority').textContent = '2.';
+
+    // Shift priority numbers
+    const allCards = oppList.children;
+    if (allCards[2]) allCards[2].querySelector('.opp-priority').textContent = '3.';
+    if (allCards[3]) allCards[3].querySelector('.opp-priority').textContent = '';
+
+    priorityCount.textContent = '4 items';
+
+    // 4. Hide toast
+    await sleep(2200);
+    mqlToast.classList.remove('show');
+
+    // 5. After ~3s of "enriching", flip to "Briefing ready"
+    await sleep(1000);
+    const workingBadge = newCard.querySelector('.relay-badge');
+    workingBadge.classList.remove('relay-badge-working');
+    workingBadge.classList.add('featured');
+    workingBadge.querySelector('.bottom').textContent = 'Briefing ready';
+    newCard.querySelector('.opp-meta').innerHTML = '<strong>Dr. Sarah Chen</strong> · VP Clinical Operations · MQL via medical imaging content · Relay enriched · just now';
+
+    simulateBtn.innerHTML = '<span class="pulse-dot"></span> Run again';
+    simulateBtn.disabled = false;
+    simulateBtn.onclick = () => location.reload();
+  }
+
+  simulateBtn.addEventListener('click', simulateMQL);
+
+  // ========== v4: Collapse toggles in briefing ==========
+  document.querySelectorAll('.collapse-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.dataset.expand;
+      const panel = document.getElementById(targetId);
+      if (!panel) return;
+      btn.classList.toggle('open');
+      panel.classList.toggle('open');
+    });
+  });
+</script>
+
+</body>
+</html>
