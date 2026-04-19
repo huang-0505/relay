@@ -1,4 +1,4 @@
-import type { MarketoLead } from './types'
+import type { Lead, MarketoLead } from './types'
 
 export const MOCK_MARKETO_LEADS: Record<string, MarketoLead> = {
   meridian: {
@@ -279,4 +279,17 @@ export type MockLeadId = keyof typeof MOCK_MARKETO_LEADS
 
 export function isKnownLeadId(id: string): id is MockLeadId {
   return id in MOCK_MARKETO_LEADS
+}
+
+// Derive a Lead (rail-shape) from the Marketo lead. Used to ground the
+// briefing view's right rail before the API returns.
+export function leadFromLeadId(id: string): Lead | null {
+  const lead = MOCK_MARKETO_LEADS[id]
+  if (!lead) return null
+  return {
+    name: lead.identity.name,
+    role: lead.identity.title,
+    company: lead.identity.company,
+    location: lead.identity.location,
+  }
 }

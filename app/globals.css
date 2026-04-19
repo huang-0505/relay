@@ -110,6 +110,16 @@ body {
   }
 }
 
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;

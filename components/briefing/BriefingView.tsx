@@ -1,15 +1,21 @@
 'use client'
 
 import { useEffect } from 'react'
-import type { Briefing } from '@/lib/types'
+import type { Briefing, Lead } from '@/lib/types'
 import { BriefingHeader } from './BriefingHeader'
 import { BriefingMain } from './BriefingMain'
 import { BriefingRail } from './BriefingRail'
-import { BriefingSkeleton } from './BriefingSkeleton'
+import { ProgressBar } from './ProgressBar'
 
 export type BriefingViewState =
   | { status: 'closed' }
-  | { status: 'loading'; leadId: string; breadcrumb: string; startedAt: number }
+  | {
+      status: 'skeleton-loading'
+      leadId: string
+      breadcrumb: string
+      lead: Lead | null
+      startedAt: number
+    }
   | { status: 'ready'; briefing: Briefing; isStreaming: boolean }
 
 interface BriefingViewProps {
@@ -32,22 +38,38 @@ export function BriefingView({ state, onClose }: BriefingViewProps) {
   const breadcrumb =
     state.status === 'ready' ? state.briefing.breadcrumb : state.breadcrumb
 
+  // Rail lead: during skeleton, pulled from MOCK_MARKETO_LEADS via the
+  // leadFromLeadId lookup in page.tsx. During ready, pulled from the
+  // briefing itself.
+  const railLead: Lead | null =
+    state.status === 'ready' ? state.briefing.lead : state.lead
+
+  const briefingForBody = state.status === 'ready' ? state.briefing : null
+  const renderState =
+    state.status === 'skeleton-loading'
+      ? 'skeleton'
+      : state.isStreaming
+        ? 'streaming'
+        : 'ready'
+
+  const progressStart =
+    state.status === 'skeleton-loading' ? state.startedAt : null
+  const progressComplete = state.status === 'ready'
+
   return (
     <div className="fixed inset-0 z-[100] flex flex-col overflow-hidden bg-d365-bg">
       <BriefingHeader breadcrumb={breadcrumb} onClose={onClose} />
-      {state.status === 'loading' ? (
-        <BriefingSkeleton startedAt={state.startedAt} />
-      ) : (
-        <div className="grid flex-1 grid-cols-[1fr_360px] overflow-hidden">
-          <div className="overflow-y-auto">
-            <BriefingMain
-              briefing={state.briefing}
-              isStreaming={state.isStreaming}
-            />
-          </div>
-          <BriefingRail briefing={state.briefing} />
+      <ProgressBar startedAt={progressStart} complete={progressComplete} />
+      <div className="grid flex-1 grid-cols-[1fr_360px] overflow-hidden">
+        <div className="overflow-y-auto">
+          <BriefingMain briefing={briefingForBody} renderState={renderState} />
         </div>
-      )}
+        {railLead ? (
+          <BriefingRail lead={railLead} briefing={briefingForBody} />
+        ) : (
+          <div className="border-l border-d365-border bg-white" />
+        )}
+      </div>
     </div>
   )
 }

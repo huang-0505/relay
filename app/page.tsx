@@ -12,6 +12,7 @@ import { RelayStatusBar } from '@/components/my-day/RelayStatusBar'
 import { StatsStrip } from '@/components/my-day/StatsStrip'
 import { AppShell } from '@/components/shell/AppShell'
 import { BRIEFINGS } from '@/lib/mock-data'
+import { leadFromLeadId } from '@/lib/mock-marketo'
 import type { Briefing } from '@/lib/types'
 
 const BREADCRUMBS: Record<string, string> = {
@@ -31,10 +32,8 @@ export default function Home() {
   const inFlightRef = useRef<Map<string, Promise<Briefing>>>(new Map())
   const activeRequestRef = useRef<string | null>(null)
   const preloadFiredRef = useRef(false)
-  // Briefings the user has already been shown. Used to decide whether the
-  // section-by-section streaming reveal should run. Streaming is only
-  // applied the first time a briefing is revealed AND only when the user
-  // actually waited through the loading skeleton (i.e. not a preload hit).
+  // Briefings the user has already been shown. First-reveal uses the
+  // skeleton/streaming animations; subsequent opens render instantly.
   const seenRef = useRef<Set<string>>(new Set())
 
   const requestBriefing = useCallback((leadId: string): Promise<Briefing> => {
@@ -67,8 +66,7 @@ export default function Home() {
     return promise
   }, [])
 
-  // Preload Meridian + Westfield silently on mount. Failures are
-  // logged upstream; we swallow here to avoid unhandled rejections.
+  // Preload Meridian + Westfield silently on mount.
   useEffect(() => {
     if (preloadFiredRef.current) return
     preloadFiredRef.current = true
@@ -87,11 +85,20 @@ export default function Home() {
       }
 
       const breadcrumb = BREADCRUMBS[leadId] ?? ''
+      const lead = leadFromLeadId(leadId)
       const startedAt = Date.now()
       activeRequestRef.current = leadId
       const wasSeen = seenRef.current.has(leadId)
 
-      setViewState({ status: 'loading', leadId, breadcrumb, startedAt })
+      // Cache miss: show the full briefing layout with skeletons immediately.
+      // Rail uses the lead lookup so identity renders from 0ms.
+      setViewState({
+        status: 'skeleton-loading',
+        leadId,
+        breadcrumb,
+        lead,
+        startedAt,
+      })
 
       requestBriefing(leadId)
         .then((briefing) => {
@@ -101,8 +108,8 @@ export default function Home() {
           setViewState({ status: 'ready', briefing, isStreaming })
         })
         .catch(() => {
-          // Unreachable in practice — requestBriefing's fallback covers
-          // both mock leads. Keep skeleton visible rather than error UI.
+          // Unreachable — requestBriefing's fallback covers both mock leads.
+          // Leave the skeleton up rather than surface an error.
         })
     },
     [requestBriefing],
