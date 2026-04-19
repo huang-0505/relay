@@ -138,3 +138,65 @@ export interface RelayStatus {
   lastSync: string
   connected: string[]
 }
+
+export type BehavioralEventType =
+  | 'page_view'
+  | 'download'
+  | 'form_fill'
+  | 'email_open'
+  | 'search'
+
+export interface BehavioralEvent {
+  timestamp: string
+  event_type: BehavioralEventType
+  asset: string
+  duration_seconds?: number
+}
+
+export interface FormFill {
+  form: string
+  completed: boolean
+  skipped_fields?: string[]
+}
+
+export interface MarketoLeadIdentity {
+  name: string
+  title: string
+  email: string
+  company: string
+  location: string
+}
+
+export interface MarketoLead {
+  id: string
+  identity: MarketoLeadIdentity
+  score: number
+  campaign_source: string
+  engagement_rhythm: string
+  form_fills: FormFill[]
+  behavioral_events: BehavioralEvent[]
+  account_notes: string
+  incumbent: string
+  known_partner_stack: string[]
+  budget_signal: string
+  timeline_signal: string
+  relevant_battle_cards: string[]
+}
+
+export interface ProductSpec {
+  name: string
+  cpu: string
+  gpu: string
+  ram: string
+  iso_certs: string[]
+  workload_profile: string
+  price_range: string
+}
+
+export interface BattleCard {
+  topic: string
+  title: string
+  key_points: string[]
+  talking_points: string[]
+  proof_points: string[]
+}

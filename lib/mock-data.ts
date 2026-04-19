@@ -284,6 +284,171 @@ export const MERIDIAN_BRIEFING: Briefing = {
   ],
 }
 
+export const LAKESHORE_BRIEFING: Briefing = {
+  id: 'lakeshore',
+  generatedMinutesAgo: 0,
+  breadcrumb: 'Lakeshore Regional Medical · AI Imaging Pilot',
+  headline:
+    "Dr. Chen is scoping workstations for a funded mammography AI pilot. Budget approved, Q2 close — HP incumbency is mid-cycle, not scheduled refresh.",
+  lead: {
+    name: 'Dr. Sarah Chen',
+    role: 'VP Clinical Operations',
+    company: 'Lakeshore Regional Medical',
+    location: 'Evanston, IL',
+  },
+  summary:
+    "Dr. Sarah Chen runs clinical operations at **Lakeshore Regional Medical** — a three-hospital network in the Chicago north-shore area (Evanston, Skokie, Glenview). She owns the business case for a funded **mammography AI triage pilot** targeting a Q2 2026 close and a six-month rollout. Her behavior this week is case-study-heavy, not spec-comparison yet — she's still building the internal argument. The incumbent fleet is **HP Z-series (Z4/Z6)** on a 2021 refresh cycle, which means a win requires displacing HP mid-cycle rather than riding a scheduled refresh.",
+  mqlTrigger: {
+    score: 88,
+    description:
+      'Triggered by **"Mammography AI at scale" case study** download · organic LinkedIn inbound · healthcare partner co-marketing',
+  },
+  facts: [
+    {
+      label: 'Role',
+      value: 'Owner of the pilot business case',
+      note: 'partners with Chief Radiologist on imaging workflow',
+    },
+    {
+      label: 'Urgency',
+      value: 'Q2 2026 close',
+      note: 'capital approved, 6-month rollout',
+    },
+    {
+      label: 'Intent',
+      value: 'Case-study research, pre-spec',
+      note: 'building internal case, not comparing SKUs yet',
+    },
+    {
+      label: 'Competition',
+      value: 'HP Z-series (incumbent)',
+      note: 'mid-cycle displacement, real switch fight',
+    },
+  ],
+  productsTag: 'Lenovo · PSREF + ISV Matrix',
+  products: [
+    {
+      name: 'ThinkStation P5',
+      why:
+        'Xeon W · RTX A4000/A5000. Certified for both iCAD ProFound AI and Volpara — the two ISVs she is evaluating. HP Z4 G5 is certified for neither.',
+      fit: 0.9,
+      topPick: true,
+    },
+    {
+      name: 'ThinkStation P3 Tower',
+      why:
+        'Entry workstation for clinical-ops review and density/risk (Volpara) stations. Lower price-point option for the non-primary reading seats in a phased rollout.',
+      fit: 0.72,
+    },
+    {
+      name: 'ThinkPad P16',
+      why:
+        'Mobile workstation option for radiologists who also read remotely. Mention only if teleradiology comes up.',
+      fit: 0.48,
+    },
+  ],
+  talkPoints: [
+    {
+      headline: 'Anchor on the AI pilot, not the workstation.',
+      body:
+        "Ask whether the current Z-series fleet has headroom for iCAD + Volpara workloads. Let her surface the gap — don't pitch a replacement upfront.",
+    },
+    {
+      headline: 'Frame the buy as pilot-scoped, not fleet refresh.',
+      body:
+        "Mid-cycle displacement is a harder sell than a refresh. Scoping to pilot stations first (5–8 seats) is a more winnable ask and keeps HP's fleet out of the fight.",
+    },
+    {
+      headline: 'Bring the ISV certification matrix.',
+      body:
+        "HP Z4 G5 is certified for neither iCAD nor Volpara as of Q1 2026. That's a real, demonstrable gap — bring the matrix, don't just claim it.",
+    },
+  ],
+  accountContext: [
+    'Lakeshore Regional is a three-hospital network (Evanston, Skokie, Glenview) with an approved capital budget for a **mammography AI triage pilot**. Target close is Q2 2026 with a six-month rollout across the three sites. The partner stack under evaluation is **iCAD ProFound AI** for triage and **Volpara** for density/risk — standard pairing for modern mammography AI deployments.',
+    'Dr. Chen owns clinical-operations strategy; she partners closely with Dr. Marcus Whitley (Chief Radiologist) on imaging-workflow decisions. The incumbent workstation fleet is HP Z-series, roughly halfway through its expected refresh cycle — meaning this is a mid-cycle displacement fight, not a scheduled refresh. Winning here means making the AI-pilot capability gap more important than the disruption of a partial fleet swap.',
+  ],
+  whyDownloaded: [
+    {
+      tag: 'Signal',
+      headline: 'Case-study-heavy browsing',
+      body: 'Still building the internal business case — not at spec comparison yet.',
+    },
+    {
+      tag: 'Role',
+      headline: 'Clinical-ops owner',
+      body: 'Owns the pilot business case end-to-end; pairs with the Chief Radiologist on workflow.',
+    },
+    {
+      tag: 'Timing',
+      headline: 'Q2 close, capital approved',
+      body: 'Six-month rollout window. Budget no longer the blocker.',
+    },
+    {
+      tag: 'Risk',
+      headline: 'HP mid-cycle fleet',
+      body: 'Displacement is harder than refresh — needs a capability wedge, not price.',
+    },
+  ],
+  signalDepth: {
+    intro:
+      'Not for daily seller use. This is the evidence layer — what Relay read from Marketo\'s raw stream, compared to what a D365-native agent would see.',
+    generic: {
+      subhead: '~15 fields make it into Dataverse.',
+      items: [
+        { text: 'Score: 88' },
+        { text: 'Source: organic / LinkedIn' },
+        { text: 'Last activity: case study download' },
+        { text: 'Campaign: partner co-marketing' },
+      ],
+    },
+    relay: {
+      subhead: 'Full unfiltered behavioral stream.',
+      items: [
+        {
+          text:
+            '**Visit sequence**: case study → P5 → P3 → iCAD ISV row → Volpara compat',
+        },
+        {
+          text: '**Content affinity**: case studies > specs (4:1 by dwell time)',
+        },
+        {
+          text: '**Engagement rhythm**: evenings (7–9 PM CT), not business hours',
+        },
+        {
+          text: '**Form fill pattern**: completed both gated forms — serious buyer',
+        },
+      ],
+    },
+  },
+  sources: [
+    { label: 'Marketo · Raw behavioral stream', kind: 'marketo' },
+    { label: 'PSREF · ThinkStation P5/P3/P16', kind: 'lenovo' },
+    { label: 'Lenovo Healthcare battle card · HP Z-series', kind: 'lenovo' },
+    { label: 'iCAD ISV certification matrix', kind: 'lenovo' },
+    { label: 'Volpara ISV certification matrix', kind: 'lenovo' },
+    { label: 'lakeshoreregional.org · services page', kind: 'public' },
+    { label: 'LinkedIn · Dr. Sarah Chen', kind: 'public' },
+    { label: 'LinkedIn · Dr. Marcus Whitley, Chief Radiologist', kind: 'public' },
+  ],
+  sourcesCount: 11,
+  quality: {
+    duration: '1m 48s',
+    sourcesCited: 11,
+    confidence: 0.85,
+    note:
+      'All sources cited. Inference runs within Lenovo tenant. 30-day expiry on competitive context.',
+  },
+  dataSources: [
+    { kind: 'marketo', label: 'Marketo · raw stream', sub: '8 behavioral events' },
+    { kind: 'lenovo', label: 'PSREF', sub: '3 SKUs matched' },
+    { kind: 'lenovo', label: 'Healthcare battle card', sub: 'HP incumbency' },
+    { kind: 'lenovo', label: 'ISV certification', sub: 'iCAD + Volpara' },
+    { kind: 'public', label: 'Public web', sub: '3 sources' },
+  ],
+}
+
 export const BRIEFINGS: Record<string, Briefing> = {
   meridian: MERIDIAN_BRIEFING,
+  lakeshore: LAKESHORE_BRIEFING,
 }

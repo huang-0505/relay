@@ -21,6 +21,7 @@ const SIMULATED_OPP: Opportunity = {
   stage: 'New',
   value: { note: 'TBD' },
   relay: { kind: 'working' },
+  briefingId: 'lakeshore',
 }
 
 export function PrioritySection({ onOpenBriefing }: PrioritySectionProps) {
