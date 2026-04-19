@@ -10,7 +10,12 @@
       "Bash(node -e \"const b = require\\('/tmp/meridian-briefing.json'\\); console.log\\('headline:', b.headline\\); console.log\\('products:', b.products.map\\(p => p.name + ' \\(fit ' + p.fit + '\\)'\\).join\\(' | '\\)\\); console.log\\('facts:', b.facts.map\\(f => f.label + '=' + f.value\\).join\\(' | '\\)\\); console.log\\('sourcesCount:', b.sourcesCount\\); console.log\\('has quality.duration:', b.quality && b.quality.duration\\);\")",
       "Bash(node -e ' *)",
       "Bash(curl -s -X POST http://localhost:3000/api/generate-briefing -H 'Content-Type: application/json' -d '{\"leadId\":\"lakeshore\"}' -o /tmp/lakeshore-briefing.json -w 'HTTP %{http_code} · %{time_total}s\\\\n')",
-      "Bash(kill bv631gu19 *)"
+      "Bash(kill bv631gu19 *)",
+      "Bash(rm -f /tmp/relay-dev.log)",
+      "Bash(echo \"PID: $!\")",
+      "Bash(curl -s -X POST http://localhost:3000/api/generate-briefing -H 'Content-Type: application/json' -d '{\"leadId\":\"meridian\"}' -o /tmp/meridian-b.json -w 'meridian: HTTP %{http_code} · %{time_total}s\\\\n')",
+      "Bash(curl -s -X POST http://localhost:3000/api/generate-briefing -H 'Content-Type: application/json' -d '{\"leadId\":\"lakeshore\"}' -o /tmp/lakeshore-b.json -w 'lakeshore: HTTP %{http_code} · %{time_total}s\\\\n')",
+      "Bash(kill 11935 kill bai08ofpp sleep 2 lsof -iTCP:3000 -sTCP:LISTEN)"
     ]
   }
 }

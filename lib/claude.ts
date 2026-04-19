@@ -41,6 +41,7 @@ export async function generateBriefing(leadId: string): Promise<Briefing> {
   const anthropic = getClient()
 
   let response
+  const startedAt = Date.now()
   try {
     response = await anthropic.messages.create({
       model: MODEL,
@@ -58,6 +59,13 @@ export async function generateBriefing(leadId: string): Promise<Briefing> {
       err,
     )
   }
+
+  const elapsedMs = Date.now() - startedAt
+  console.log(
+    `[generate-briefing] leadId=${leadId} elapsed=${elapsedMs}ms ` +
+      `input_tokens=${response.usage.input_tokens} output_tokens=${response.usage.output_tokens} ` +
+      `stop_reason=${response.stop_reason}`,
+  )
 
   const text = extractText(response)
   let json: unknown
@@ -154,7 +162,20 @@ function validateBriefingShape(value: unknown): Omit<Briefing, 'id' | 'breadcrum
   o.products = clampArray(o.products, 3)
   o.facts = clampArray(o.facts, 4)
   o.talkPoints = clampArray(o.talkPoints, 3)
-  o.whyDownloaded = clampArray(o.whyDownloaded, 4)
+  o.whyDownloaded = clampArray(o.whyDownloaded, 3)
+
+  // signalDepth.generic/relay items: target 3, accept 2-4.
+  if (o.signalDepth && typeof o.signalDepth === 'object') {
+    const sd = o.signalDepth as Record<string, unknown>
+    if (sd.generic && typeof sd.generic === 'object') {
+      const g = sd.generic as Record<string, unknown>
+      if (Array.isArray(g.items)) g.items = clampArray(g.items, 3)
+    }
+    if (sd.relay && typeof sd.relay === 'object') {
+      const r = sd.relay as Record<string, unknown>
+      if (Array.isArray(r.items)) r.items = clampArray(r.items, 3)
+    }
+  }
 
   // Cast is safe — structural validation above guards the fields we touch.
   // Deeper per-field validation is deferred to the UI, which renders defensively.

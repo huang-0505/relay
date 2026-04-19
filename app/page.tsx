@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   BriefingView,
   type BriefingViewState,
@@ -25,43 +25,78 @@ export default function Home() {
   })
 
   const cacheRef = useRef<Map<string, Briefing>>(new Map())
+  const inFlightRef = useRef<Map<string, Promise<Briefing>>>(new Map())
   const activeRequestRef = useRef<string | null>(null)
+  const preloadFiredRef = useRef(false)
 
-  const handleOpen = useCallback((leadId: string) => {
-    const cached = cacheRef.current.get(leadId)
-    if (cached) {
-      setViewState({ status: 'ready', briefing: cached })
-      return
-    }
+  const requestBriefing = useCallback((leadId: string): Promise<Briefing> => {
+    const existing = inFlightRef.current.get(leadId)
+    if (existing) return existing
 
-    const breadcrumb = BREADCRUMBS[leadId] ?? ''
-    const startedAt = Date.now()
-    activeRequestRef.current = leadId
-
-    setViewState({ status: 'loading', leadId, breadcrumb, startedAt })
-
-    fetchBriefing(leadId)
+    const promise = fetchBriefing(leadId)
       .then((briefing) => {
         cacheRef.current.set(leadId, briefing)
-        if (activeRequestRef.current === leadId) {
-          setViewState({ status: 'ready', briefing })
-        }
+        return briefing
       })
       .catch((err) => {
-        console.error('[Relay] briefing generation failed:', err)
         const fallback = BRIEFINGS[leadId]
         if (fallback) {
           cacheRef.current.set(leadId, fallback)
-          if (activeRequestRef.current === leadId) {
-            setViewState({ status: 'ready', briefing: fallback })
-          }
-        } else if (activeRequestRef.current === leadId) {
-          // No fallback — hold on the skeleton rather than surface an error.
-          // In practice both mock leads have fallbacks, so this branch is unreachable.
-          console.error('[Relay] no fallback briefing for leadId:', leadId)
+          console.error(
+            '[Relay] live generation failed, using fallback briefing:',
+            err,
+          )
+          return fallback
         }
+        console.error('[Relay] briefing generation failed, no fallback:', err)
+        throw err
       })
+      .finally(() => {
+        inFlightRef.current.delete(leadId)
+      })
+
+    inFlightRef.current.set(leadId, promise)
+    return promise
   }, [])
+
+  // Preload Meridian silently on mount. If it fails, no UI impact —
+  // the user's click will just trigger a fresh request (and fallback).
+  useEffect(() => {
+    if (preloadFiredRef.current) return
+    preloadFiredRef.current = true
+    requestBriefing('meridian').catch(() => {
+      // Already logged; ignore here to avoid unhandled rejection.
+    })
+  }, [requestBriefing])
+
+  const handleOpen = useCallback(
+    (leadId: string) => {
+      const cached = cacheRef.current.get(leadId)
+      if (cached) {
+        setViewState({ status: 'ready', briefing: cached })
+        return
+      }
+
+      const breadcrumb = BREADCRUMBS[leadId] ?? ''
+      const startedAt = Date.now()
+      activeRequestRef.current = leadId
+
+      setViewState({ status: 'loading', leadId, breadcrumb, startedAt })
+
+      requestBriefing(leadId)
+        .then((briefing) => {
+          if (activeRequestRef.current === leadId) {
+            setViewState({ status: 'ready', briefing })
+          }
+        })
+        .catch(() => {
+          // No fallback path reached requestBriefing — both mock leads
+          // have fallbacks, so this should be unreachable in practice.
+          // Keep the skeleton up rather than surface an error.
+        })
+    },
+    [requestBriefing],
+  )
 
   const handleClose = useCallback(() => {
     activeRequestRef.current = null

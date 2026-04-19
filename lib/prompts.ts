@@ -14,6 +14,17 @@ VOICE — CRITICAL
 - Every tactical sentence has a concrete verb and a concrete object. "Ask where inference latency shows up in workflow" beats "explore their AI needs".
 - Match the reference style in the schema's example values. Short, declarative, specific.
 
+BREVITY BUDGET — STRICT
+This briefing is read in under 2 minutes by a busy seller. Respect these length limits:
+- summary: 2 sentences. ~40 words total.
+- accountContext: exactly 1 paragraph, 2-3 sentences, ~50 words.
+- talkPoints[].body: 1 sentence, ~20 words.
+- products[].why: 1 sentence, ~18 words.
+- whyDownloaded[].body: 1 short sentence, ~12 words.
+- signalDepth.relay.items[].text: bolded label + 1 short clause, ~12 words after the label.
+- signalDepth.intro: 1 sentence, ~16 words.
+Every word over budget costs the seller time. Cut adjectives. Cut "in order to". Cut "this means that".
+
 GROUNDING RULES
 - Only cite facts that appear in the input data (marketo lead, products, battle cards). Never invent a person, a partnership, a metric, or a product.
 - If the input doesn't support a claim, don't make it. Prefer "the data does not show" to making something up.
@@ -27,8 +38,11 @@ PRODUCT SELECTION
 - The 'why' field for each product must reference specifics from the catalog or lead (cpu/gpu/ISV cert/workload match) — not generic praise.
 
 SIGNAL DEPTH
-- generic.items: 4 flat field-level facts a D365-synced system would have (score, source, last activity, campaign).
-- relay.items: 4 behavioral-stream observations that require access to the raw Marketo data. Each one must start with a bolded label ("**Visit sequence**:", "**Content affinity**:", "**Engagement rhythm**:", "**Form fill pattern**:") and end with a specific observation drawn from the behavioral_events / form_fills / engagement_rhythm in the input.
+- generic.items: 3 flat field-level facts a D365-synced system would have (score, source, last activity, campaign — pick the 3 most informative).
+- relay.items: 3 behavioral-stream observations that require access to the raw Marketo data. Each one must start with a bolded label (choose 3 of: "**Visit sequence**:", "**Content affinity**:", "**Engagement rhythm**:", "**Form fill pattern**:") and end with a specific observation drawn from the behavioral_events / form_fills / engagement_rhythm in the input.
+
+WHY DOWNLOADED
+- 3 insight cards. Pick the 3 most seller-relevant tags from: Signal, Role, Timing, Risk. Drop whichever one adds the least value for this specific lead. Do not return all 4.
 
 SOURCES
 - List every input source the briefing draws on: Marketo behavioral stream (kind: marketo), each Lenovo asset used — PSREF, battle cards, ISV matrix (kind: lenovo), and public web sources like company press pages / LinkedIn profiles of named people (kind: public).
@@ -38,7 +52,7 @@ Return exactly one JSON object. No prose before or after. No markdown code fence
 
 const SCHEMA_TEXT = `{
   "headline": "<one sentence, <=160 chars, captures buyer intent + the timing or competitive angle. No bold markers here.>",
-  "summary": "<2-4 sentences. Include **bold** around key entities (people, companies, partnerships, products).>",
+  "summary": "<2 sentences, ~40 words total. Include **bold** around key entities (people, companies, partnerships, products).>",
   "mqlTrigger": {
     "score": <integer from input lead.score>,
     "description": "<1 sentence describing what triggered the MQL. Format: 'Triggered by **<asset name>** · <campaign / source context>'.>"
@@ -51,43 +65,39 @@ const SCHEMA_TEXT = `{
   ],
   "productsTag": "Lenovo · PSREF + ISV Matrix",
   "products": [
-    { "name": "<exact product name from catalog>", "why": "<1 sentence tying CPU/GPU/ISV certs to this lead's workload>", "fit": <0.0-1.0>, "topPick": true },
-    { "name": "<exact product name from catalog>", "why": "<1 sentence>", "fit": <0.0-1.0> },
-    { "name": "<exact product name from catalog>", "why": "<1 sentence>", "fit": <0.0-1.0> }
+    { "name": "<exact product name from catalog>", "why": "<1 sentence, ~18 words, ties CPU/GPU/ISV certs to this lead's workload>", "fit": <0.0-1.0>, "topPick": true },
+    { "name": "<exact product name from catalog>", "why": "<1 sentence, ~18 words>", "fit": <0.0-1.0> },
+    { "name": "<exact product name from catalog>", "why": "<1 sentence, ~18 words>", "fit": <0.0-1.0> }
   ],
   "talkPoints": [
-    { "headline": "<short imperative sentence ending with period>", "body": "<1-2 sentences with concrete tactical advice>" },
-    { "headline": "<...>", "body": "<...>" },
-    { "headline": "<...>", "body": "<...>" }
+    { "headline": "<short imperative sentence ending with period>", "body": "<1 sentence, ~20 words, concrete tactical advice>" },
+    { "headline": "<...>", "body": "<1 sentence, ~20 words>" },
+    { "headline": "<...>", "body": "<1 sentence, ~20 words>" }
   ],
   "accountContext": [
-    "<paragraph 1: company + strategic context (announcements, partnerships, capital plans). Include **bold** on key entities.>",
-    "<paragraph 2: org / decision-making context (who reports to whom, who to align with).>"
+    "<exactly 1 paragraph, 2-3 sentences, ~50 words. Company + strategic context + the one org/decision dynamic the seller most needs to know. Include **bold** on key entities.>"
   ],
   "whyDownloaded": [
-    { "tag": "Signal", "headline": "<3-5 words>", "body": "<1 sentence>" },
-    { "tag": "Role",   "headline": "<3-5 words>", "body": "<1 sentence>" },
-    { "tag": "Timing", "headline": "<3-5 words>", "body": "<1 sentence>" },
-    { "tag": "Risk",   "headline": "<3-5 words>", "body": "<1 sentence>" }
+    { "tag": "<Signal|Role|Timing|Risk>", "headline": "<3-5 words>", "body": "<1 short sentence, ~12 words>" },
+    { "tag": "<Signal|Role|Timing|Risk>", "headline": "<3-5 words>", "body": "<1 short sentence, ~12 words>" },
+    { "tag": "<Signal|Role|Timing|Risk>", "headline": "<3-5 words>", "body": "<1 short sentence, ~12 words>" }
   ],
   "signalDepth": {
     "intro": "<one italic-feeling sentence framing this as the evidence layer>",
     "generic": {
       "subhead": "~15 fields make it into Dataverse.",
       "items": [
-        { "text": "Score: <number>" },
-        { "text": "Source: <paid search / organic / etc>" },
-        { "text": "Last activity: <short label>" },
-        { "text": "Campaign: <short label>" }
+        { "text": "<D365-visible field, e.g. Score: 92>" },
+        { "text": "<D365-visible field>" },
+        { "text": "<D365-visible field>" }
       ]
     },
     "relay": {
       "subhead": "Full unfiltered behavioral stream.",
       "items": [
-        { "text": "**Visit sequence**: <concrete ordered path from behavioral_events>" },
-        { "text": "**Content affinity**: <ratio or pattern from behavioral_events>" },
-        { "text": "**Engagement rhythm**: <from engagement_rhythm field>" },
-        { "text": "**Form fill pattern**: <from form_fills>" }
+        { "text": "**<label>**: <concrete observation from raw data>" },
+        { "text": "**<label>**: <concrete observation from raw data>" },
+        { "text": "**<label>**: <concrete observation from raw data>" }
       ]
     }
   },
