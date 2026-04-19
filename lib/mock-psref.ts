@@ -65,6 +65,36 @@ export const MOCK_PRODUCTS: ProductSpec[] = [
     price_range: '$2,400 – $4,800',
   },
   {
+    name: 'ThinkPad T14 Gen 5',
+    cpu: 'Intel Core Ultra 7 (vPro)',
+    gpu: 'Integrated Intel Arc graphics',
+    ram: 'Up to 64 GB DDR5',
+    iso_certs: [],
+    workload_profile:
+      'Standard clinical + business notebook. Epic Hyperspace + Teams + clinical web apps. Fleet-friendly: vPro, ThinkShield, 4-year warranty, docked + mobile workflows. The default workhorse for 150–500 user endpoint fleets.',
+    price_range: '$1,400 – $2,100',
+  },
+  {
+    name: 'ThinkPad T14s Gen 4',
+    cpu: 'Intel Core Ultra 5 / Ultra 7',
+    gpu: 'Integrated Intel Arc graphics',
+    ram: 'Up to 32 GB LPDDR5x (soldered)',
+    iso_certs: [],
+    workload_profile:
+      'Thin-and-light clinical notebook. Same-family alternative to T14 for roaming/clinical staff who carry the device all day. Non-serviceable RAM is the tradeoff.',
+    price_range: '$1,500 – $2,300',
+  },
+  {
+    name: 'ThinkPad E15',
+    cpu: 'Intel Core i5 / i7 (13th gen)',
+    gpu: 'Integrated Intel graphics',
+    ram: 'Up to 40 GB DDR4',
+    iso_certs: [],
+    workload_profile:
+      'Value business notebook. Admin staff, non-clinical knowledge workers, shared/kiosk use. No vPro. Consider when a T14 is over-specced for a seat role.',
+    price_range: '$900 – $1,300',
+  },
+  {
     name: 'ThinkCentre M90t Gen 5',
     cpu: 'Intel Core i5 / i7 (14th gen)',
     gpu: 'Integrated UHD / optional NVIDIA T400',

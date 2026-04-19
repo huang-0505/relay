@@ -10,7 +10,7 @@ import { BriefingSkeleton } from './BriefingSkeleton'
 export type BriefingViewState =
   | { status: 'closed' }
   | { status: 'loading'; leadId: string; breadcrumb: string; startedAt: number }
-  | { status: 'ready'; briefing: Briefing }
+  | { status: 'ready'; briefing: Briefing; isStreaming: boolean }
 
 interface BriefingViewProps {
   state: BriefingViewState
@@ -40,7 +40,10 @@ export function BriefingView({ state, onClose }: BriefingViewProps) {
       ) : (
         <div className="grid flex-1 grid-cols-[1fr_360px] overflow-hidden">
           <div className="overflow-y-auto">
-            <BriefingMain briefing={state.briefing} />
+            <BriefingMain
+              briefing={state.briefing}
+              isStreaming={state.isStreaming}
+            />
           </div>
           <BriefingRail briefing={state.briefing} />
         </div>

@@ -16,8 +16,11 @@ import type { Briefing } from '@/lib/types'
 
 const BREADCRUMBS: Record<string, string> = {
   meridian: 'Meridian Health · Radiology AI Infrastructure',
+  westfield: 'Westfield Medical Group · Endpoint Refresh',
   lakeshore: 'Lakeshore Regional Medical · AI Imaging Pilot',
 }
+
+const PRELOAD_LEAD_IDS = ['meridian', 'westfield'] as const
 
 export default function Home() {
   const [viewState, setViewState] = useState<BriefingViewState>({
@@ -28,6 +31,11 @@ export default function Home() {
   const inFlightRef = useRef<Map<string, Promise<Briefing>>>(new Map())
   const activeRequestRef = useRef<string | null>(null)
   const preloadFiredRef = useRef(false)
+  // Briefings the user has already been shown. Used to decide whether the
+  // section-by-section streaming reveal should run. Streaming is only
+  // applied the first time a briefing is revealed AND only when the user
+  // actually waited through the loading skeleton (i.e. not a preload hit).
+  const seenRef = useRef<Set<string>>(new Set())
 
   const requestBriefing = useCallback((leadId: string): Promise<Briefing> => {
     const existing = inFlightRef.current.get(leadId)
@@ -59,40 +67,42 @@ export default function Home() {
     return promise
   }, [])
 
-  // Preload Meridian silently on mount. If it fails, no UI impact —
-  // the user's click will just trigger a fresh request (and fallback).
+  // Preload Meridian + Westfield silently on mount. Failures are
+  // logged upstream; we swallow here to avoid unhandled rejections.
   useEffect(() => {
     if (preloadFiredRef.current) return
     preloadFiredRef.current = true
-    requestBriefing('meridian').catch(() => {
-      // Already logged; ignore here to avoid unhandled rejection.
-    })
+    for (const leadId of PRELOAD_LEAD_IDS) {
+      requestBriefing(leadId).catch(() => {})
+    }
   }, [requestBriefing])
 
   const handleOpen = useCallback(
     (leadId: string) => {
       const cached = cacheRef.current.get(leadId)
       if (cached) {
-        setViewState({ status: 'ready', briefing: cached })
+        seenRef.current.add(leadId)
+        setViewState({ status: 'ready', briefing: cached, isStreaming: false })
         return
       }
 
       const breadcrumb = BREADCRUMBS[leadId] ?? ''
       const startedAt = Date.now()
       activeRequestRef.current = leadId
+      const wasSeen = seenRef.current.has(leadId)
 
       setViewState({ status: 'loading', leadId, breadcrumb, startedAt })
 
       requestBriefing(leadId)
         .then((briefing) => {
-          if (activeRequestRef.current === leadId) {
-            setViewState({ status: 'ready', briefing })
-          }
+          if (activeRequestRef.current !== leadId) return
+          const isStreaming = !wasSeen
+          seenRef.current.add(leadId)
+          setViewState({ status: 'ready', briefing, isStreaming })
         })
         .catch(() => {
-          // No fallback path reached requestBriefing — both mock leads
-          // have fallbacks, so this should be unreachable in practice.
-          // Keep the skeleton up rather than surface an error.
+          // Unreachable in practice — requestBriefing's fallback covers
+          // both mock leads. Keep skeleton visible rather than error UI.
         })
     },
     [requestBriefing],

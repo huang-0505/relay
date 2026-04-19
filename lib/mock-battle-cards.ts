@@ -96,6 +96,46 @@ export const MOCK_BATTLE_CARDS: Record<string, BattleCard> = {
     ],
   },
 
+  'dell-latitude-competitive': {
+    topic: 'dell-latitude-competitive',
+    title: 'Competing vs. Dell Latitude (endpoint refresh)',
+    key_points: [
+      'Dell Latitude 5000-series is the default mid-market clinical notebook. Fleets typically run 4-year refresh cycles, aligned to warranty expiry.',
+      'ThinkPad T14 wins on 3-year TCO primarily through: ThinkShield fleet management (no extra license fee), longer battery life, better keyboard/spill-resistance for clinical use, and Lenovo Premier Support SLA.',
+      'Dell\'s ProDeploy services carry a line-item cost that Lenovo\'s Premier deployment often waives on 150+ seat deals.',
+      'Warranty transfer / buyback incentives: Lenovo will credit against residual value of the outgoing Latitude fleet, net-negative to capital outlay.',
+    ],
+    talking_points: [
+      'Open with TCO, not device specs. Most IT directors have a spreadsheet — ask what their model shows and match yours to the line items they care about.',
+      'Bring up warranty expiry first. "Six months from a forced refresh" is a stronger urgency than any spec comparison.',
+      'Offer a phased rollout: 30-40 seats in month 1 as a pilot, rest of fleet over the next 90 days. Low-risk path to a full win.',
+      'If the buyer has been Dell for 8+ years, do not frame this as "switching" — frame it as "consolidating the contract."',
+    ],
+    proof_points: [
+      'Published 3-year TCO model: ThinkPad T14 Gen 5 vs. Latitude 5450 on 200 seats — $47K advantage driven by deployment + fleet-mgmt + support.',
+      'Reference: 12-site physician group (~220 endpoints) that migrated from Latitude to T14 in 2024 — cited ThinkShield fleet management as the deciding factor.',
+    ],
+  },
+
+  'volume-endpoint-refresh': {
+    topic: 'volume-endpoint-refresh',
+    title: 'Volume endpoint refresh · pricing + services playbook',
+    key_points: [
+      'Volume discount tiers: 100-seat break, 250-seat break, 500-seat break. 180 seats sits just below the 250-seat tier — worth flagging whether adding admin seats closes the gap.',
+      'Lenovo Device-as-a-Service (DaaS) is available for fleets 100+: converts capex to opex, includes warranty + fleet management + optional deployment labor. Often the right answer when the buyer is working around a warranty-expiry forcing function.',
+      'Premier deployment for 150+ seat deals: imaging, asset tagging, user-profile migration, on-site rollout. Typically waived against Dell\'s ProDeploy as a closing incentive.',
+      'Epic Hyperspace, Teams, and most clinical web apps are vPro-agnostic — don\'t over-sell vPro unless the IT team explicitly has an endpoint-mgmt constraint.',
+    ],
+    talking_points: [
+      'Ask about the procurement mechanism first: capex refresh or DaaS subscription? Changes the whole conversation.',
+      'If buyer is at 180-190 seats, ask if admin/knowledge-worker roles could fold in — hitting the next volume tier often pays for itself.',
+      'Phased rollout offer is always right for warranty-driven refresh: low-risk pilot wave, then bulk.',
+    ],
+    proof_points: [
+      'DaaS case study: 160-endpoint primary-care network, 36-month DaaS term, zero capital outlay, 18% TCO saving vs. Dell capex equivalent.',
+    ],
+  },
+
   'healthcare-capex-cycles': {
     topic: 'healthcare-capex-cycles',
     title: 'Healthcare capex cycles · timing',

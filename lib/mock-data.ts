@@ -75,6 +75,7 @@ export const PRIORITY_OPPORTUNITIES: Opportunity[] = [
     stage: 'Qualify',
     value: { amount: '$180K' },
     relay: { kind: 'ready' },
+    briefingId: 'westfield',
   },
   {
     id: 'ashford',
@@ -448,7 +449,164 @@ export const LAKESHORE_BRIEFING: Briefing = {
   ],
 }
 
+export const WESTFIELD_BRIEFING: Briefing = {
+  id: 'westfield',
+  generatedMinutesAgo: 0,
+  breadcrumb: 'Westfield Medical Group · Endpoint Refresh',
+  headline:
+    "Ryan Chen is short-listing vendors for a 180-seat endpoint refresh. Dell Latitude warranty expires in 6 months — forced timing, not strategic.",
+  lead: {
+    name: 'Ryan Chen',
+    role: 'Director of IT',
+    company: 'Westfield Medical Group',
+    location: 'Indianapolis, IN',
+  },
+  summary:
+    "**Ryan Chen** owns vendor evaluation for a 180-seat endpoint refresh across **Westfield Medical Group**'s 5 Indianapolis clinics. His **Dell Latitude** fleet hits end-of-warranty in six months, forcing the refresh. CIO **Sarah Lin** is the decision maker; Ryan's job is to hand her a short list backed by a TCO model.",
+  mqlTrigger: {
+    score: 68,
+    description:
+      'Triggered by **ThinkPad T14 productivity bundle** return visit + **TCO calculator** completion · organic search entry',
+  },
+  facts: [
+    {
+      label: 'Role',
+      value: 'Evaluator, not final approver',
+      note: 'CIO Sarah Lin signs',
+    },
+    {
+      label: 'Urgency',
+      value: '~6 months',
+      note: 'Dell Latitude warranty expiry',
+    },
+    {
+      label: 'Intent',
+      value: 'Vendor shortlist, TCO-driven',
+      note: 'already ran our calculator',
+    },
+    {
+      label: 'Competition',
+      value: 'Dell Latitude (incumbent)',
+      note: 'no structural lock-in',
+    },
+  ],
+  productsTag: 'Lenovo · PSREF + Volume Playbook',
+  products: [
+    {
+      name: 'ThinkPad T14 Gen 5',
+      why:
+        "vPro + ThinkShield + 4-year warranty — direct fit for a 180-seat mid-market clinical fleet. Strongest 3-year TCO vs. Latitude on our published model.",
+      fit: 0.91,
+      topPick: true,
+    },
+    {
+      name: 'ThinkPad T14s Gen 4',
+      why:
+        'Same-family thin-and-light for 20–30 roaming clinical staff who carry the device all day. Mix into the T14 deal as a secondary SKU.',
+      fit: 0.83,
+    },
+    {
+      name: 'ThinkPad E15',
+      why:
+        'Value option for admin / non-clinical knowledge workers where T14 is over-specced. Use to hit the 250-seat volume tier if scope expands.',
+      fit: 0.72,
+    },
+  ],
+  talkPoints: [
+    {
+      headline: 'Open on TCO, not device specs.',
+      body:
+        "He already ran our calculator — ask what his model shows and match yours to the line items he cares about.",
+    },
+    {
+      headline: 'Anchor on warranty expiry, not product preference.',
+      body:
+        'Six months from a forced refresh is the real urgency. Specs and brand loyalty come second — timing is the wedge.',
+    },
+    {
+      headline: 'Offer a phased pilot to de-risk the switch.',
+      body:
+        '30-40 seats in month 1, rest over 90 days. Lowest-risk path to a full-fleet win; lets him show the CIO proof before committing the full $180K.',
+    },
+  ],
+  accountContext: [
+    'Westfield Medical Group is a **physician-owned primary-care and specialty network** — 5 Indianapolis clinics, 180 clinical staff, running Epic and Microsoft 365. CIO **Sarah Lin** is the sign-off; Ryan owns vendor evaluation and the RFP. There is no known Dell strategic relationship beyond the installed Latitude fleet, so framing this as "consolidating the contract" is softer than "switching vendors."',
+  ],
+  whyDownloaded: [
+    {
+      tag: 'Signal',
+      headline: 'TCO calculator completion',
+      body: 'Filled with 180 seats + Latitude incumbent — he is modeling the buy, not browsing.',
+    },
+    {
+      tag: 'Timing',
+      headline: 'Return visit after 2 days',
+      body: 'Classic IT-research pattern — evaluated once, came back to compare specific SKUs.',
+    },
+    {
+      tag: 'Risk',
+      headline: 'Dell incumbency + 8+ years',
+      body: 'Frame as contract consolidation, not switch. Lowers political friction for Ryan.',
+    },
+  ],
+  signalDepth: {
+    intro:
+      'Not for daily seller use. Evidence layer comparing what Relay read against a D365-native view.',
+    generic: {
+      subhead: '~15 fields make it into Dataverse.',
+      items: [
+        { text: 'Score: 68' },
+        { text: 'Source: direct / return visitor' },
+        { text: 'Last activity: volume pricing page' },
+      ],
+    },
+    relay: {
+      subhead: 'Full unfiltered behavioral stream.',
+      items: [
+        {
+          text:
+            '**Visit sequence**: T14 bundle → TCO calc → whitepaper → T14s → volume pricing → ThinkShield',
+        },
+        {
+          text:
+            '**TCO inputs**: 180 seats · Latitude incumbent · 4-year horizon · he built the model',
+        },
+        {
+          text:
+            '**Engagement rhythm**: two return sessions, both in business hours, 2 days apart',
+        },
+      ],
+    },
+  },
+  sources: [
+    { label: 'Marketo · Raw behavioral stream', kind: 'marketo' },
+    { label: 'PSREF · ThinkPad T14, T14s, E15', kind: 'lenovo' },
+    { label: 'Lenovo 3-yr TCO model · T14 vs Latitude', kind: 'lenovo' },
+    { label: 'Volume-refresh playbook · 180-seat tier', kind: 'lenovo' },
+    { label: 'TCO calculator inputs (submitted by lead)', kind: 'marketo' },
+    { label: 'westfieldmedical.com · locations page', kind: 'public' },
+    { label: 'LinkedIn · Ryan Chen, Director of IT', kind: 'public' },
+    { label: 'LinkedIn · Sarah Lin, CIO', kind: 'public' },
+  ],
+  sourcesCount: 11,
+  quality: {
+    duration: '1m 48s',
+    sourcesCited: 11,
+    confidence: 0.89,
+    note:
+      'All sources cited. Inference runs within Lenovo tenant. 30-day expiry on competitive context.',
+  },
+  dataSources: [
+    { kind: 'marketo', label: 'Marketo · raw stream', sub: '9 behavioral events' },
+    { kind: 'lenovo', label: 'PSREF', sub: '3 SKUs matched' },
+    { kind: 'lenovo', label: 'TCO model', sub: 'T14 vs Latitude' },
+    { kind: 'lenovo', label: 'Volume playbook', sub: '180-seat tier' },
+    { kind: 'public', label: 'Public web', sub: '3 sources' },
+  ],
+}
+
 export const BRIEFINGS: Record<string, Briefing> = {
   meridian: MERIDIAN_BRIEFING,
   lakeshore: LAKESHORE_BRIEFING,
+  westfield: WESTFIELD_BRIEFING,
 }

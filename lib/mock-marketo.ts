@@ -94,6 +94,99 @@ export const MOCK_MARKETO_LEADS: Record<string, MarketoLead> = {
     ],
   },
 
+  westfield: {
+    id: 'westfield',
+    identity: {
+      name: 'Ryan Chen',
+      title: 'Director of IT',
+      email: 'rchen@westfieldmedical.com',
+      company: 'Westfield Medical Group',
+      location: 'Indianapolis, IN',
+    },
+    score: 68,
+    campaign_source:
+      'Direct (return visitor) · originally inbound via search: "enterprise endpoint refresh TCO"',
+    engagement_rhythm:
+      'Business-hours sessions, split across two days. Re-engaged 2 days after first visit — classic IT-research pattern.',
+    form_fills: [
+      {
+        form: '"Endpoint management for mid-size clinical networks" whitepaper gate',
+        completed: true,
+      },
+      {
+        form: 'TCO calculator — filled 180 seats, Dell Latitude incumbent, 4-year horizon',
+        completed: true,
+      },
+    ],
+    behavioral_events: [
+      {
+        timestamp: '2026-04-18T10:22:00Z',
+        event_type: 'page_view',
+        asset: 'lenovo.com/business/laptops — ThinkPad T14 productivity bundle',
+        duration_seconds: 156,
+      },
+      {
+        timestamp: '2026-04-18T10:26:00Z',
+        event_type: 'page_view',
+        asset: 'ThinkPad T14 Gen 5 — specs tab',
+        duration_seconds: 201,
+      },
+      {
+        timestamp: '2026-04-18T10:32:00Z',
+        event_type: 'page_view',
+        asset: 'Enterprise TCO calculator — interactive tool',
+        duration_seconds: 338,
+      },
+      {
+        timestamp: '2026-04-18T10:41:00Z',
+        event_type: 'form_fill',
+        asset: 'TCO calculator submission (180 seats, Latitude incumbent)',
+      },
+      {
+        timestamp: '2026-04-18T10:45:00Z',
+        event_type: 'download',
+        asset: '"Endpoint management for mid-size clinical networks" whitepaper',
+      },
+      {
+        timestamp: '2026-04-20T09:08:00Z',
+        event_type: 'page_view',
+        asset: 'ThinkPad T14 Gen 5 product page (return visit)',
+        duration_seconds: 98,
+      },
+      {
+        timestamp: '2026-04-20T09:11:00Z',
+        event_type: 'page_view',
+        asset: 'ThinkPad T14s Gen 4 product page',
+        duration_seconds: 142,
+      },
+      {
+        timestamp: '2026-04-20T09:15:00Z',
+        event_type: 'page_view',
+        asset: 'Volume pricing / quotes landing page',
+        duration_seconds: 87,
+      },
+      {
+        timestamp: '2026-04-20T09:18:00Z',
+        event_type: 'page_view',
+        asset: 'ThinkShield endpoint management overview',
+        duration_seconds: 164,
+      },
+    ],
+    account_notes:
+      'Westfield Medical Group is a physician-owned primary-care and specialty network: 5 locations across greater Indianapolis, 180 clinical staff total. Incumbent endpoint fleet is Dell Latitude 5000 series, approaching 4 years in service, with manufacturer warranty expiring in 6 months — a hard forcing function. Decision maker is CIO Sarah Lin; Ryan Chen (Director of IT) owns vendor evaluation and the RFP process. No known ties to Dell beyond the current fleet. Budget envelope is ~$180K per the TCO calculator inputs (180 seats × ~$1K effective device cost).',
+    incumbent: 'Dell Latitude 5000 series (~4 years old, warranty expiring 6 months)',
+    known_partner_stack: ['Epic (EMR)', 'Microsoft 365', 'Cisco (networking)'],
+    budget_signal:
+      '~$180K budget envelope inferred from TCO calculator (180 seats). Not yet in capex cycle — procurement driven by warranty expiry.',
+    timeline_signal:
+      'Warranty expires in 6 months. Behavior shows return visit pattern — active vendor evaluation, likely building a short list.',
+    relevant_battle_cards: [
+      'dell-latitude-competitive',
+      'volume-endpoint-refresh',
+      'healthcare-capex-cycles',
+    ],
+  },
+
   lakeshore: {
     id: 'lakeshore',
     identity: {
