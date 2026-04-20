@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import {
   BriefingView,
   type BriefingViewState,
@@ -13,7 +13,6 @@ import { StatsStrip } from '@/components/my-day/StatsStrip'
 import { AppShell } from '@/components/shell/AppShell'
 import { BRIEFINGS } from '@/lib/mock-data'
 import { leadFromLeadId } from '@/lib/mock-marketo'
-import type { Briefing } from '@/lib/types'
 
 const BREADCRUMBS: Record<string, string> = {
   meridian: 'Meridian Health · Radiology AI Infrastructure',
@@ -21,104 +20,83 @@ const BREADCRUMBS: Record<string, string> = {
   lakeshore: 'Lakeshore Regional Medical · AI Imaging Pilot',
 }
 
-const PRELOAD_LEAD_IDS = ['meridian', 'westfield'] as const
+// Lakeshore's first open gets a short artificial "processing" moment —
+// skeleton layout + progress bar for this long, then the real briefing
+// fades in via StreamingReveal's 3.2s stagger.
+const REVEAL_MS = 1000
+
+// Leads that get the skeleton → streaming reveal treatment on their
+// FIRST open. Everything else (and every re-open) renders instantly.
+const REVEAL_LEAD_IDS = new Set(['lakeshore'])
 
 export default function Home() {
   const [viewState, setViewState] = useState<BriefingViewState>({
     status: 'closed',
   })
 
-  const cacheRef = useRef<Map<string, Briefing>>(new Map())
-  const inFlightRef = useRef<Map<string, Promise<Briefing>>>(new Map())
-  const activeRequestRef = useRef<string | null>(null)
-  const preloadFiredRef = useRef(false)
-  // Briefings the user has already been shown. First-reveal uses the
-  // skeleton/streaming animations; subsequent opens render instantly.
+  // Briefings the user has already been shown. Controls whether the
+  // reveal animation plays on open.
   const seenRef = useRef<Set<string>>(new Set())
+  // Active reveal timer — cleared on close or on a fresh open.
+  const revealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const requestBriefing = useCallback((leadId: string): Promise<Briefing> => {
-    const existing = inFlightRef.current.get(leadId)
-    if (existing) return existing
-
-    const promise = fetchBriefing(leadId)
-      .then((briefing) => {
-        cacheRef.current.set(leadId, briefing)
-        return briefing
-      })
-      .catch((err) => {
-        const fallback = BRIEFINGS[leadId]
-        if (fallback) {
-          cacheRef.current.set(leadId, fallback)
-          console.error(
-            '[Relay] live generation failed, using fallback briefing:',
-            err,
-          )
-          return fallback
-        }
-        console.error('[Relay] briefing generation failed, no fallback:', err)
-        throw err
-      })
-      .finally(() => {
-        inFlightRef.current.delete(leadId)
-      })
-
-    inFlightRef.current.set(leadId, promise)
-    return promise
-  }, [])
-
-  // Preload Meridian + Westfield silently on mount.
-  useEffect(() => {
-    if (preloadFiredRef.current) return
-    preloadFiredRef.current = true
-    for (const leadId of PRELOAD_LEAD_IDS) {
-      requestBriefing(leadId).catch(() => {})
+  const clearRevealTimer = useCallback(() => {
+    if (revealTimerRef.current !== null) {
+      clearTimeout(revealTimerRef.current)
+      revealTimerRef.current = null
     }
-  }, [requestBriefing])
+  }, [])
 
   const handleOpen = useCallback(
     (leadId: string) => {
-      const cached = cacheRef.current.get(leadId)
-      if (cached) {
-        seenRef.current.add(leadId)
-        setViewState({ status: 'ready', briefing: cached, isStreaming: false })
+      clearRevealTimer()
+
+      const briefing = BRIEFINGS[leadId]
+      if (!briefing) {
+        // Defensive — all three demo leads have hand-written mocks, so
+        // this branch should never fire in practice.
+        console.error('[Relay] no briefing found for leadId:', leadId)
         return
       }
 
-      const breadcrumb = BREADCRUMBS[leadId] ?? ''
-      const lead = leadFromLeadId(leadId)
-      const startedAt = Date.now()
-      activeRequestRef.current = leadId
-      const wasSeen = seenRef.current.has(leadId)
+      const shouldReveal =
+        REVEAL_LEAD_IDS.has(leadId) && !seenRef.current.has(leadId)
 
-      // Cache miss: show the full briefing layout with skeletons immediately.
-      // Rail uses the lead lookup so identity renders from 0ms.
+      if (!shouldReveal) {
+        seenRef.current.add(leadId)
+        setViewState({ status: 'ready', briefing, isStreaming: false })
+        return
+      }
+
+      // Lakeshore first-open flow: skeleton for REVEAL_MS, then stream
+      // the real briefing in.
+      const startedAt = Date.now()
       setViewState({
-        status: 'skeleton-loading',
+        status: 'revealing',
         leadId,
-        breadcrumb,
-        lead,
+        breadcrumb: BREADCRUMBS[leadId] ?? '',
+        lead: leadFromLeadId(leadId),
         startedAt,
       })
 
-      requestBriefing(leadId)
-        .then((briefing) => {
-          if (activeRequestRef.current !== leadId) return
-          const isStreaming = !wasSeen
-          seenRef.current.add(leadId)
-          setViewState({ status: 'ready', briefing, isStreaming })
+      revealTimerRef.current = setTimeout(() => {
+        revealTimerRef.current = null
+        seenRef.current.add(leadId)
+        setViewState({
+          status: 'ready',
+          briefing,
+          isStreaming: true,
+          revealStartedAt: startedAt,
         })
-        .catch(() => {
-          // Unreachable — requestBriefing's fallback covers both mock leads.
-          // Leave the skeleton up rather than surface an error.
-        })
+      }, REVEAL_MS)
     },
-    [requestBriefing],
+    [clearRevealTimer],
   )
 
   const handleClose = useCallback(() => {
-    activeRequestRef.current = null
+    clearRevealTimer()
     setViewState({ status: 'closed' })
-  }, [])
+  }, [clearRevealTimer])
 
   return (
     <>
@@ -132,17 +110,4 @@ export default function Home() {
       <BriefingView state={viewState} onClose={handleClose} />
     </>
   )
-}
-
-async function fetchBriefing(leadId: string): Promise<Briefing> {
-  const res = await fetch('/api/generate-briefing', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ leadId }),
-  })
-  if (!res.ok) {
-    const body = await res.text().catch(() => '')
-    throw new Error(`HTTP ${res.status}: ${body || res.statusText}`)
-  }
-  return (await res.json()) as Briefing
 }

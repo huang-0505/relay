@@ -5,38 +5,46 @@ import { useEffect, useState } from 'react'
 interface ProgressBarProps {
   startedAt: number | null
   complete: boolean
+  targetMs?: number
+  linear?: boolean
 }
 
-// 0 → 80% over TARGET_MS with ease-out, then hold at 80% until `complete`
-// flips, at which point the container snaps to 100% and fades out.
-const TARGET_MS = 20_000
+// Progress reaches HOLD_CEILING at targetMs. Beyond that, holds flat
+// until `complete` flips, at which point the container snaps to 100%
+// and fades out.
+const DEFAULT_TARGET_MS = 20_000
 const HOLD_CEILING = 80
 
-function progressAt(elapsedMs: number): number {
-  if (elapsedMs >= TARGET_MS) return HOLD_CEILING
-  const t = elapsedMs / TARGET_MS
-  const eased = 1 - Math.pow(1 - t, 2)
-  return eased * HOLD_CEILING
+function progressAt(elapsedMs: number, targetMs: number, linear: boolean): number {
+  if (elapsedMs >= targetMs) return HOLD_CEILING
+  const t = elapsedMs / targetMs
+  const curve = linear ? t : 1 - Math.pow(1 - t, 2)
+  return curve * HOLD_CEILING
 }
 
-export function ProgressBar({ startedAt, complete }: ProgressBarProps) {
+export function ProgressBar({
+  startedAt,
+  complete,
+  targetMs = DEFAULT_TARGET_MS,
+  linear = false,
+}: ProgressBarProps) {
   const [elapsedMs, setElapsedMs] = useState(() =>
     startedAt ? Date.now() - startedAt : 0,
   )
   const [hidden, setHidden] = useState(false)
 
-  // Tick while we have a start time and are not complete.
+  // Tick while loading. Short revealMs flows (like the 1000ms Lakeshore
+  // reveal) need a faster tick to look smooth at the end of the ramp.
   useEffect(() => {
     if (startedAt === null || complete) return
+    const tickMs = targetMs < 3000 ? 40 : 100
     const id = setInterval(() => {
       setElapsedMs(Date.now() - startedAt)
-    }, 100)
+    }, tickMs)
     return () => clearInterval(id)
-  }, [startedAt, complete])
+  }, [startedAt, complete, targetMs])
 
-  // On completion: fade the bar out after it snaps to 100%. ProgressBar
-  // remounts on every briefing open, so no reset for `complete` going
-  // back to false is needed.
+  // Fade out 400ms after completion.
   useEffect(() => {
     if (!complete) return
     const id = setTimeout(() => setHidden(true), 400)
@@ -45,7 +53,7 @@ export function ProgressBar({ startedAt, complete }: ProgressBarProps) {
 
   if (startedAt === null) return null
 
-  const pct = complete ? 100 : progressAt(elapsedMs)
+  const pct = complete ? 100 : progressAt(elapsedMs, targetMs, linear)
 
   return (
     <div
@@ -59,7 +67,7 @@ export function ProgressBar({ startedAt, complete }: ProgressBarProps) {
           width: `${pct}%`,
           transition: complete
             ? 'width 300ms ease-out'
-            : 'width 120ms linear',
+            : `width ${targetMs < 3000 ? 60 : 120}ms linear`,
         }}
       />
     </div>

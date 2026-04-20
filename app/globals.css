@@ -44,7 +44,7 @@ body {
   background: var(--color-d365-bg);
   color: var(--color-d365-ink);
   font-family: var(--font-sans);
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.4;
   -webkit-font-smoothing: antialiased;
   height: 100vh;
